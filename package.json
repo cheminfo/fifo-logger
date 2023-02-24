@@ -30,12 +30,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cheminfo/logger.git"
+    "url": "git+https://github.com/cheminfo/fifo-logger.git"
   },
   "bugs": {
-    "url": "https://github.com/cheminfo/logger/issues"
+    "url": "https://github.com/cheminfo/fifio-logger/issues"
   },
-  "homepage": "https://github.com/cheminfo/logger#readme",
+  "homepage": "https://github.com/cheminfo/fifo-logger#readme",
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.21.2",
     "@babel/preset-typescript": "^7.21.0",

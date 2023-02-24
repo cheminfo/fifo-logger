@@ -35,6 +35,8 @@ test('FifoLogger', () => {
 
   const childLogs = child.getLogs();
 
+  console.log(JSON.stringify(allLogs, null, 2));
+
   expect(childLogs).toHaveLength(3);
   expect(
     childLogs.map((log) => ({ message: log.message, meta: log.meta })),
