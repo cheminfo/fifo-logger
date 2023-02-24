@@ -14,10 +14,9 @@ Simple event logger.
 ## Usage
 
 ```js
-import { myModule } from 'logger';
+import { Logger } from 'logger';
 
-const result = myModule(args);
-// result is ...
+const logger = new Logger();
 ```
 
 ## License
