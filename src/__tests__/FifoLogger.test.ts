@@ -45,4 +45,7 @@ test('FifoLogger', () => {
 
   const errorLogs = child.getLogs({ level: 'error' });
   expect(errorLogs).toHaveLength(1);
+
+  const containsErrorObject = allLogs.filter((log) => log.error);
+  expect(containsErrorObject).toHaveLength(1);
 });

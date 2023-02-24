@@ -1,5 +1,14 @@
 import { v4 } from '@lukeed/uuid';
-import pino, { Logger, LevelMapping } from 'pino';
+import pino, { Logger } from 'pino';
+
+type LogEntry = {
+  message: string | undefined;
+  meta: Record<string, any> | undefined;
+  level: number;
+  levelLabel: string;
+  context: string | undefined;
+  error: Error | undefined;
+};
 
 type FifoLoggerOptions = {
   /**
@@ -10,32 +19,18 @@ type FifoLoggerOptions = {
   /**
    * The minimum level of events to store.
    * Allowed values: 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'
+   * g
    * @default 'info'
    *
    */
   level?: string;
-  /**
-   * The events array to store the events in.
-   * @private
-   */
-  events?: any[];
-  /**
-   *  The pino instance to use.
-   * @private
-   */
-  pino?: Logger;
-  /**
-   * The context to use for the events.
-   * @private
-   */
-  context?: string;
 };
 
 /**
  * A FIFO logger that stores the last events in an array.
  */
 export class FifoLogger {
-  private events: any[];
+  private events: LogEntry[];
   private pino: Logger;
   private context: string;
 
@@ -50,7 +45,7 @@ export class FifoLogger {
     return this.pino;
   }
 
-  getLogs(options: { minLevel?: string; level?: string } = {}): any[] {
+  getLogs(options: { minLevel?: string; level?: string } = {}): LogEntry[] {
     const { level, minLevel } = options;
     let logs = this.events.slice();
 
@@ -79,11 +74,7 @@ export class FifoLogger {
   }
 
   child(context = v4()) {
-    const newFifoLogger = new FifoLogger({
-      events: this.events,
-      context,
-      pino: this.pino.child({ context }),
-    });
+    const newFifoLogger = new FifoLogger();
 
     newFifoLogger.events = this.events;
     newFifoLogger.context = context;
@@ -131,9 +122,9 @@ function getPino(
     {
       level: options.level,
       base: {},
-      messageKey: 'message',
-      errorKey: 'error',
-      nestedKey: 'meta',
+      // messageKey: 'message', // seems it is not taken into account in browser
+      // errorKey: 'error',
+      // nestedKey: 'meta',
       browser: {
         write: (event) => {
           addEvent(events, event, options);
@@ -149,8 +140,9 @@ function getPino(
 }
 
 function addEvent(events: any[], event: any, options: { limit?: number } = {}) {
+  const { level, context, time, msg, err, ...rest } = event;
   const { limit = 10000 } = options;
-  events.push(event);
+  events.push({ level, time, context, message: msg, error: err, meta: rest });
   if (events.length > limit) {
     events.shift();
   }
