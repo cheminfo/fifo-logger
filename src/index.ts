@@ -1,1 +1,1 @@
-export * from './WebEventLogger';
+export * from './FifoLogger';
