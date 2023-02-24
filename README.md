@@ -7,6 +7,8 @@
 
 Simple event logger for the browser and node.js that wraps `pino`.
 
+By default it will keep the 10'000 last events that can easily be retrieved and filtered.
+
 ## Installation
 
 `$ npm i fifo-logger`
