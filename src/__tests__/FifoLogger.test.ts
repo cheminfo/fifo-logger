@@ -1,5 +1,3 @@
-import { P } from 'pino';
-
 import { FifoLogger, LogEntry } from '../FifoLogger';
 
 describe('FifoLogger', () => {
