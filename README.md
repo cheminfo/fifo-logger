@@ -43,6 +43,68 @@ logger.fatal(new Error('a fatal error'));
 const logs = logger.getLogs();
 ```
 
+## Logging in a specific context
+
+A `child` logger may be created in order to store specific related logs. By default the child process will receive a 'context' property that contains a uuid
+
+```js
+import { FifoLogger } from 'fifo-logger';
+
+const logger = new Logger();
+
+logger.info('an info');
+
+const childLogger = logger.child();
+
+const anotherLogger = logger.child();
+```
+
+## Callback when new logs are added
+
+If you need to update the log list based on new addition you can add the `onChange` callback
+
+```js
+const logger = new FifoLogger({
+  onChange: (log, logs) => {
+    console.log(log, logs);
+  },
+});
+```
+
+## Callback with throttling
+
+Libraries may be quite verbose and you can throttle the callback using such a code
+
+```js
+import { throttle } from 'throttle-debounce';
+
+import { FifoLogger } from 'fifo-logger';
+
+let results: any = [];
+
+let throttleFunc = throttle(100, (log, logs) => {
+  results.push(log.message);
+  results.push(logs.length);
+});
+
+const logger = new FifoLogger({
+  onChange: throttleFunc,
+});
+
+logger.info('first info');
+logger.info('second info');
+
+const start = Date.now();
+while (Date.now() - start < 120);
+
+logger.info('an info after 120ms');
+
+console.log(results);
+// ['first info', 1, 'an info after 120ms', 3]
+```
+
+    ##
+
 ## License
 
 [MIT](./LICENSE)
@@ -55,3 +117,7 @@ const logs = logger.getLogs();
 [codecov-url]: https://codecov.io/gh/cheminfo/fifo-logger
 [download-image]: https://img.shields.io/npm/dm/fifo-logger.svg
 [download-url]: https://www.npmjs.com/package/fifo-logger
+
+```
+
+```

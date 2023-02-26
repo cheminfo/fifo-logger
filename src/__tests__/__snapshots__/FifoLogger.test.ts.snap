@@ -23,23 +23,8 @@ exports[`FifoLogger child 1`] = `
   {
     "context": "context",
     "error": {
-      "message": "Fatal error",
-      "stack": "Error: Fatal error
-    at Object.<anonymous> (/Users/lpatiny/git/cheminfo/fifo-logger/src/__tests__/FifoLogger.test.ts:94:17)
-    at Promise.then.completed (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/utils.js:293:28)
-    at new Promise (<anonymous>)
-    at callAsyncCircusFn (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/utils.js:226:10)
-    at _callCircusTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:248:40)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at _runTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:184:3)
-    at _runTestsForDescribeBlock (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:86:9)
-    at _runTestsForDescribeBlock (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:81:9)
-    at run (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:26:3)
-    at runAndTransformResultsToJestFormat (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
-    at jestAdapter (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-runner/build/runTest.js:444:34)",
-      "type": "Error",
+      "message": "Message",
+      "name": "Name",
     },
     "level": 60,
     "levelLabel": "fatal",
@@ -64,23 +49,8 @@ exports[`FifoLogger child 2`] = `
   {
     "context": "context",
     "error": {
-      "message": "Fatal error",
-      "stack": "Error: Fatal error
-    at Object.<anonymous> (/Users/lpatiny/git/cheminfo/fifo-logger/src/__tests__/FifoLogger.test.ts:94:17)
-    at Promise.then.completed (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/utils.js:293:28)
-    at new Promise (<anonymous>)
-    at callAsyncCircusFn (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/utils.js:226:10)
-    at _callCircusTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:248:40)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at _runTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:184:3)
-    at _runTestsForDescribeBlock (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:86:9)
-    at _runTestsForDescribeBlock (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:81:9)
-    at run (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:26:3)
-    at runAndTransformResultsToJestFormat (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
-    at jestAdapter (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-runner/build/runTest.js:444:34)",
-      "type": "Error",
+      "message": "Message",
+      "name": "Name",
     },
     "level": 60,
     "levelLabel": "fatal",

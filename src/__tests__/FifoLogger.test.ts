@@ -1,3 +1,5 @@
+import { throttle } from 'throttle-debounce';
+
 import { FifoLogger, LogEntry } from '../FifoLogger';
 
 describe('FifoLogger', () => {
@@ -113,6 +115,38 @@ describe('FifoLogger', () => {
     const containsErrorObject = allLogs.filter((log) => log.error);
     expect(containsErrorObject).toHaveLength(1);
   });
+
+  it('onchange', () => {
+    let results: any = [];
+    const logger = new FifoLogger({
+      onChange: (log, logs) => {
+        results.push(log.message);
+        results.push(logs.length);
+      },
+    });
+    // we can directly log at the level of the logger, we hide the fact that we are using pino
+    logger.info('first info');
+    logger.info('second info');
+    expect(results).toEqual(['first info', 1, 'second info', 2]);
+  });
+
+  it('onchange with throttle', () => {
+    let results: any = [];
+    let throttleFunc = throttle(100, (log, logs) => {
+      results.push(log.message);
+      results.push(logs.length);
+    });
+    const logger = new FifoLogger({
+      onChange: throttleFunc,
+    });
+    // we can directly log at the level of the logger, we hide the fact that we are using pino
+    logger.info('first info');
+    logger.info('second info');
+    const start = Date.now();
+    while (Date.now() - start < 120);
+    logger.info('an info after 120ms');
+    expect(results).toEqual(['first info', 1, 'an info after 120ms', 3]);
+  });
 });
 
 function removeVariableValues(logs: LogEntry[]): LogEntry[] {
@@ -120,5 +154,6 @@ function removeVariableValues(logs: LogEntry[]): LogEntry[] {
     ...log,
     time: 42,
     context: log.context ? 'context' : undefined,
+    error: log.error ? { message: 'Message', name: 'Name' } : undefined,
   }));
 }

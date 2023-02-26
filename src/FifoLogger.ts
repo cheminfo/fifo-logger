@@ -13,7 +13,7 @@ export type LogEntry = {
   error?: Error;
 };
 
-type FifoLoggerOptions = {
+export type FifoLoggerOptions = {
   /**
    * The maximum number of events to store.
    * @default 1000
@@ -22,11 +22,14 @@ type FifoLoggerOptions = {
   /**
    * The minimum level of events to store.
    * Allowed values: 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'
-   * g
    * @default 'info'
    *
    */
   level?: string;
+  /**
+   * Called when a new log is added.
+   */
+  onChange?: (log: LogEntry, logs: LogEntry[]) => void;
 };
 
 /**
@@ -38,10 +41,9 @@ export class FifoLogger {
   private context: string;
 
   constructor(options: FifoLoggerOptions = {}) {
-    const { limit = 1000, level = 'info' } = options;
     this.events = [];
-    this.pino = getPino(this.events, { limit, level });
     this.context = '';
+    this.pino = getPino(this.events, options);
   }
 
   getPino(): Logger {
