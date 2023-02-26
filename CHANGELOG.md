@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.0](https://github.com/cheminfo/fifo-logger/compare/v0.0.1...v0.1.0) (2023-02-26)
+
+
+### Features
+
+* add onChange callback ([d5ad5e6](https://github.com/cheminfo/fifo-logger/commit/d5ad5e68e5202fc15350d0a4d81a33bb40dcfdc6))
+* getLogs returns only the current context ([c24acb5](https://github.com/cheminfo/fifo-logger/commit/c24acb58c354057bf54379ced0641ecc7c35e3ab))
+
+
+### Documentation
+
+* fix links ([5226424](https://github.com/cheminfo/fifo-logger/commit/5226424254847a5af7ad1bb1bc927b015be10130))
+
 ## 0.0.1 (2023-02-24)
 
 
