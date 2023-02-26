@@ -38,6 +38,63 @@ describe('FifoLogger', () => {
     expect(removeVariableValues(logs)).toMatchSnapshot();
   });
 
+  it('child and grandchild', () => {
+    const logger = new FifoLogger();
+    // we can directly log at the level of the logger, we hide the fact that we are using pino
+    logger.info('an info');
+
+    // we can also get a child logger, by default it will use a random uuid
+    const child = logger.child();
+    child.warn('a warn in a child');
+
+    const grandchild = child.child();
+    grandchild.error('an error in a grandchild');
+
+    child.warn('another warn in a child');
+
+    expect(logger.getLogs()).toHaveLength(1);
+    expect(logger.getLogs({ includeChildren: true })).toHaveLength(4);
+
+    expect(child.getLogs()).toHaveLength(2);
+    expect(child.getLogs({ includeChildren: true })).toHaveLength(3);
+    expect(grandchild.getLogs()).toHaveLength(1);
+    expect(grandchild.getLogs({ includeChildren: true })).toHaveLength(1);
+  });
+
+  it('error', () => {
+    const logger = new FifoLogger();
+    logger.info('an info');
+
+    logger.fatal(new Error('Fatal error'));
+
+    const child = logger.child();
+    child.fatal(new Error('fatal error in child'));
+
+    const containsErrorObject = logger
+      .getLogs({ includeChildren: true })
+      .filter((log) => log.error);
+    expect(containsErrorObject).toHaveLength(2);
+  });
+
+  it('child with custom properties', () => {
+    const logger = new FifoLogger();
+    logger.info({ a: 1 }, 'an info');
+    const child = logger.child({ a: 2, b: 4 });
+    child.warn('a warn in a child');
+    const grandchild = child.child({ a: 3, c: 5 });
+    grandchild.error('an error in a grandchild');
+
+    const metas = logger
+      .getLogs({ includeChildren: true })
+      .map((log) => log.meta);
+
+    expect(metas).toStrictEqual([
+      { a: 1 },
+      { a: 2, b: 4 },
+      { a: 3, b: 4, c: 5 },
+    ]);
+  });
+
   it('using pino and pino child', () => {
     const logger = new FifoLogger();
     // if we are using a library that logs in pino we can sent the pino instance
@@ -83,39 +140,6 @@ describe('FifoLogger', () => {
     `);
   });
 
-  it('child', () => {
-    const logger = new FifoLogger();
-    // we can directly log at the level of the logger, we hide the fact that we are using pino
-    logger.info('an info');
-
-    // we can also get a child logger, by default it will use a random uuid
-    const child = logger.child();
-    child.error('an error in a child');
-    child.fatal(new Error('Fatal error'));
-
-    const allLogs = logger.getLogs();
-    expect(allLogs).toHaveLength(3);
-
-    const contextLogs = allLogs.filter((log) => log.context);
-    expect(contextLogs).toHaveLength(2);
-
-    expect(removeVariableValues(allLogs)).toMatchSnapshot();
-
-    const childLogs = child.getLogs();
-
-    expect(childLogs).toHaveLength(2);
-    expect(removeVariableValues(childLogs)).toMatchSnapshot();
-
-    const atLeastErrorLogs = child.getLogs({ minLevel: 'error' });
-    expect(atLeastErrorLogs).toHaveLength(2);
-
-    const errorLogs = child.getLogs({ level: 'error' });
-    expect(errorLogs).toHaveLength(1);
-
-    const containsErrorObject = allLogs.filter((log) => log.error);
-    expect(containsErrorObject).toHaveLength(1);
-  });
-
   it('onchange', () => {
     let results: any = [];
     const logger = new FifoLogger({
@@ -149,11 +173,11 @@ describe('FifoLogger', () => {
   });
 });
 
-function removeVariableValues(logs: LogEntry[]): LogEntry[] {
+function removeVariableValues(logs: LogEntry[]) {
   return logs.map((log) => ({
     ...log,
     time: 42,
-    context: log.context ? 'context' : undefined,
+    uuids: log.uuids.length,
     error: log.error ? { message: 'Message', name: 'Name' } : undefined,
   }));
 }

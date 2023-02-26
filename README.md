@@ -20,7 +20,7 @@ import { FifoLogger } from 'fifo-logger';
 
 const logger = new Logger({
   limit: 1000, // default value
-  level: 'info', // default value
+  level: 'info', // by default we will not log the level under 'info' (trace and debug)
 });
 
 logger.trace('a trace');
@@ -45,18 +45,27 @@ const logs = logger.getLogs();
 
 ## Logging in a specific context
 
-A `child` logger may be created in order to store specific related logs. By default the child process will receive a 'context' property that contains a uuid
+A `child` logger may be created in order to store specific related logs. Each logger or child logger will receive a specific UUID.
 
 ```js
 import { FifoLogger } from 'fifo-logger';
 
 const logger = new Logger();
-
 logger.info('an info');
 
 const childLogger = logger.child();
+childLogger.info('from child');
+
+const grandChildLogger = childLogger.child();
+grandChildLogger.info('from grandchild');
 
 const anotherLogger = logger.child();
+anotherLogger.info('from another child');
+
+console.log(logger.getLogs()); // 1 element
+console.log(logger.getLogs({ includeChildren: true })); // 4 elements
+console.log(childLogger.getLogs()); // 1 element
+console.log(childLogger.getLogs({ includechilren: true })); // 3 elements
 ```
 
 ## Callback when new logs are added
@@ -102,8 +111,6 @@ logger.info('an info after 120ms');
 console.log(results);
 // ['first info', 1, 'an info after 120ms', 3]
 ```
-
-    ##
 
 ## License
 

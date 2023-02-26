@@ -1,103 +1,42 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FifoLogger child 1`] = `
-[
-  {
-    "context": undefined,
-    "error": undefined,
-    "level": 30,
-    "levelLabel": "info",
-    "message": "an info",
-    "meta": {},
-    "time": 42,
-  },
-  {
-    "context": "context",
-    "error": undefined,
-    "level": 50,
-    "levelLabel": "error",
-    "message": "an error in a child",
-    "meta": {},
-    "time": 42,
-  },
-  {
-    "context": "context",
-    "error": {
-      "message": "Message",
-      "name": "Name",
-    },
-    "level": 60,
-    "levelLabel": "fatal",
-    "message": "Fatal error",
-    "meta": {},
-    "time": 42,
-  },
-]
-`;
-
-exports[`FifoLogger child 2`] = `
-[
-  {
-    "context": "context",
-    "error": undefined,
-    "level": 50,
-    "levelLabel": "error",
-    "message": "an error in a child",
-    "meta": {},
-    "time": 42,
-  },
-  {
-    "context": "context",
-    "error": {
-      "message": "Message",
-      "name": "Name",
-    },
-    "level": 60,
-    "levelLabel": "fatal",
-    "message": "Fatal error",
-    "meta": {},
-    "time": 42,
-  },
-]
-`;
-
 exports[`FifoLogger simple case, default level and limit 1`] = `
 [
   {
-    "context": undefined,
     "error": undefined,
     "level": 30,
     "levelLabel": "info",
     "message": "an info",
     "meta": {},
     "time": 42,
+    "uuids": 1,
   },
   {
-    "context": undefined,
     "error": undefined,
     "level": 40,
     "levelLabel": "warn",
     "message": "a warning",
     "meta": {},
     "time": 42,
+    "uuids": 1,
   },
   {
-    "context": undefined,
     "error": undefined,
     "level": 50,
     "levelLabel": "error",
     "message": "an error",
     "meta": {},
     "time": 42,
+    "uuids": 1,
   },
   {
-    "context": undefined,
     "error": undefined,
     "level": 60,
     "levelLabel": "fatal",
     "message": "a fatal error",
     "meta": {},
     "time": 42,
+    "uuids": 1,
   },
 ]
 `;
@@ -105,22 +44,22 @@ exports[`FifoLogger simple case, default level and limit 1`] = `
 exports[`FifoLogger simple case, limit 2 1`] = `
 [
   {
-    "context": undefined,
     "error": undefined,
     "level": 50,
     "levelLabel": "error",
     "message": "an error",
     "meta": {},
     "time": 42,
+    "uuids": 1,
   },
   {
-    "context": undefined,
     "error": undefined,
     "level": 60,
     "levelLabel": "fatal",
     "message": "a fatal error",
     "meta": {},
     "time": 42,
+    "uuids": 1,
   },
 ]
 `;

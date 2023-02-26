@@ -1,17 +1,17 @@
-import pino, { Logger } from 'pino';
+import pino, { Logger, levels } from 'pino';
 
 import { FifoLoggerOptions, LogEntry } from './FifoLogger';
 
 export function getPino(
   events: any[],
+  uuids: string[],
   options: FifoLoggerOptions = {},
 ): Logger {
-  const realOptions = { limit: 1000, level: 'info', ...options };
-
+  const realOptions = { limit: 1000, level: 'info', uuids, ...options };
   return pino(
     {
       level: realOptions.level,
-      base: {},
+      base: {}, // seems not taken into account in browser, we can not place uuids here. Needs to add some hacks
       // messageKey: 'message', // seems it is not taken into account in browser
       // errorKey: 'error',
       // nestedKey: 'meta',
@@ -35,14 +35,16 @@ function addEvent(
   options: {
     limit: number;
     onChange?: (log: LogEntry, logs: LogEntry[]) => void;
+    uuids: string[];
   },
 ) {
-  const { level, context, time, msg, err, ...rest } = event;
+  const { level, time, msg, err, uuids, ...rest } = event;
   const { limit, onChange } = options;
-  const realEvent = {
+  const realEvent: LogEntry = {
     level,
+    levelLabel: levels.labels[level],
     time,
-    context,
+    uuids: uuids || options.uuids, // more hacks to be able to use pino in the browser and in nodejs
     message: msg,
     error: err,
     meta: rest,

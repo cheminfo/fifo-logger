@@ -7,9 +7,9 @@ export type LogEntry = {
   time: number;
   level: number;
   levelLabel: string;
-  message?: string;
+  uuids: string[];
+  message: string;
   meta?: Record<string, any>;
-  context?: string;
   error?: Error;
 };
 
@@ -38,25 +38,34 @@ export type FifoLoggerOptions = {
 export class FifoLogger {
   private events: LogEntry[];
   private pino: Logger;
-  private context: string;
+  private uuids: string[] = [];
 
   constructor(options: FifoLoggerOptions = {}) {
+    this.uuids = [v4()];
     this.events = [];
-    this.context = '';
-    this.pino = getPino(this.events, options);
+    this.pino = getPino(this.events, this.uuids, options);
   }
 
   getPino(): Logger {
     return this.pino;
   }
 
-  getLogs(options: { minLevel?: string; level?: string } = {}): LogEntry[] {
-    const { level, minLevel } = options;
+  getLogs(
+    options: {
+      minLevel?: string;
+      level?: string;
+      includeChildren?: boolean;
+    } = {},
+  ): LogEntry[] {
+    const { level, minLevel, includeChildren } = options;
     let logs = this.events.slice();
 
-    if (this.context) {
-      logs = logs.filter((e) => e.context === this.context);
+    if (includeChildren) {
+      logs = logs.filter((log) => log.uuids.includes(this.uuids[0]));
+    } else {
+      logs = logs.filter((log) => log.uuids[0] === this.uuids[0]);
     }
+
     if (level) {
       const levelNumber = Number(this.pino.levels.values[level]);
       if (Number.isNaN(levelNumber)) {
@@ -72,18 +81,24 @@ export class FifoLogger {
       logs = logs.filter((log) => log.level >= levelNumber);
     }
 
-    return logs.map((log) => ({
-      ...log,
-      levelLabel: this.pino.levels.labels[log.level],
-    }));
+    return logs;
   }
 
-  child(context = v4()) {
+  /**
+   * @param bindings: an object of key-value pairs to include in log lines as properties.
+   * @param options: an options object that will override child logger inherited options.
+   */
+
+  child(bindings?: Record<string, any>) {
     const newFifoLogger = new FifoLogger();
 
     newFifoLogger.events = this.events;
-    newFifoLogger.context = context;
-    newFifoLogger.pino = this.pino.child({ context });
+    newFifoLogger.uuids = [v4(), ...this.uuids];
+
+    newFifoLogger.pino = this.pino.child({
+      uuids: newFifoLogger.uuids,
+      ...bindings,
+    });
 
     return newFifoLogger;
   }
