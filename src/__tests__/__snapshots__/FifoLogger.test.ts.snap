@@ -1,63 +1,156 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FifoLogger 1`] = `
+exports[`FifoLogger child 1`] = `
 [
   {
+    "context": undefined,
+    "error": undefined,
     "level": 30,
     "levelLabel": "info",
-    "message": "This is an info",
+    "message": "an info",
     "meta": {},
+    "time": 42,
   },
   {
-    "level": 40,
-    "levelLabel": "warn",
-    "message": "This is a warning with object",
-    "meta": {},
-  },
-  {
-    "level": 40,
-    "levelLabel": "warn",
-    "message": "This is a warning",
-    "meta": {
-      "a": 1,
-      "b": 2,
-      "c": "Hello",
-    },
-  },
-  {
+    "context": "context",
+    "error": undefined,
     "level": 50,
     "levelLabel": "error",
-    "message": "This is an error in a child",
+    "message": "an error in a child",
     "meta": {},
+    "time": 42,
   },
   {
+    "context": "context",
+    "error": {
+      "message": "Fatal error",
+      "stack": "Error: Fatal error
+    at Object.<anonymous> (/Users/lpatiny/git/cheminfo/fifo-logger/src/__tests__/FifoLogger.test.ts:94:17)
+    at Promise.then.completed (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/utils.js:293:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:248:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:86:9)
+    at _runTestsForDescribeBlock (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:81:9)
+    at run (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-runner/build/runTest.js:444:34)",
+      "type": "Error",
+    },
     "level": 60,
     "levelLabel": "fatal",
     "message": "Fatal error",
     "meta": {},
-  },
-  {
-    "level": 30,
-    "levelLabel": "info",
-    "message": "This is an info in a child pino",
-    "meta": {},
+    "time": 42,
   },
 ]
 `;
 
-exports[`FifoLogger 2`] = `
+exports[`FifoLogger child 2`] = `
 [
   {
-    "message": "This is an error in a child",
+    "context": "context",
+    "error": undefined,
+    "level": 50,
+    "levelLabel": "error",
+    "message": "an error in a child",
     "meta": {},
+    "time": 42,
   },
   {
+    "context": "context",
+    "error": {
+      "message": "Fatal error",
+      "stack": "Error: Fatal error
+    at Object.<anonymous> (/Users/lpatiny/git/cheminfo/fifo-logger/src/__tests__/FifoLogger.test.ts:94:17)
+    at Promise.then.completed (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/utils.js:293:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:248:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:86:9)
+    at _runTestsForDescribeBlock (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:81:9)
+    at run (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/lpatiny/git/cheminfo/fifo-logger/node_modules/jest-runner/build/runTest.js:444:34)",
+      "type": "Error",
+    },
+    "level": 60,
+    "levelLabel": "fatal",
     "message": "Fatal error",
     "meta": {},
+    "time": 42,
+  },
+]
+`;
+
+exports[`FifoLogger simple case, default level and limit 1`] = `
+[
+  {
+    "context": undefined,
+    "error": undefined,
+    "level": 30,
+    "levelLabel": "info",
+    "message": "an info",
+    "meta": {},
+    "time": 42,
   },
   {
-    "message": "This is an info in a child pino",
+    "context": undefined,
+    "error": undefined,
+    "level": 40,
+    "levelLabel": "warn",
+    "message": "a warning",
     "meta": {},
+    "time": 42,
+  },
+  {
+    "context": undefined,
+    "error": undefined,
+    "level": 50,
+    "levelLabel": "error",
+    "message": "an error",
+    "meta": {},
+    "time": 42,
+  },
+  {
+    "context": undefined,
+    "error": undefined,
+    "level": 60,
+    "levelLabel": "fatal",
+    "message": "a fatal error",
+    "meta": {},
+    "time": 42,
+  },
+]
+`;
+
+exports[`FifoLogger simple case, limit 2 1`] = `
+[
+  {
+    "context": undefined,
+    "error": undefined,
+    "level": 50,
+    "levelLabel": "error",
+    "message": "an error",
+    "meta": {},
+    "time": 42,
+  },
+  {
+    "context": undefined,
+    "error": undefined,
+    "level": 60,
+    "levelLabel": "fatal",
+    "message": "a fatal error",
+    "meta": {},
+    "time": 42,
   },
 ]
 `;

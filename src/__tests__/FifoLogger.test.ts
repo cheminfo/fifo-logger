@@ -1,53 +1,126 @@
-import { FifoLogger } from '../FifoLogger';
+import { P } from 'pino';
 
-test('FifoLogger', () => {
-  const logger = new FifoLogger();
-  // we can directly log at the level of the logger, we hide the fact that we are using pino
-  logger.info('This is an info');
+import { FifoLogger, LogEntry } from '../FifoLogger';
 
-  // if we are using a library that logs in pino we can sent the pino instance
-  const pino = logger.getPino();
-  pino.warn('This is a warning with object');
-  pino.warn({ a: 1, b: 2, c: 'Hello' }, 'This is a warning');
+describe('FifoLogger', () => {
+  it('simple case, default level and limit', () => {
+    const logger = new FifoLogger();
+    logger.trace('a trace');
+    logger.debug('a debug');
+    logger.info('an info');
+    logger.warn('a warning');
+    logger.error('an error');
+    logger.fatal('a fatal error');
 
-  // we can also get a child logger, by default it will use a random uuid
-  const child = logger.child();
-  child.error('This is an error in a child');
-  child.fatal(new Error('Fatal error'));
-  // logs are added in the parent logger but can be filtered at the level of the child
-  const childPino = child.getPino();
-  childPino.info('This is an info in a child pino');
+    const logs = logger.getLogs();
+    expect(logs.map((log) => log.message)).toStrictEqual([
+      'an info',
+      'a warning',
+      'an error',
+      'a fatal error',
+    ]);
+    expect(removeVariableValues(logs)).toMatchSnapshot();
+  });
 
-  const allLogs = logger.getLogs();
-  expect(allLogs).toHaveLength(6);
+  it('simple case, limit 2', () => {
+    const logger = new FifoLogger({ limit: 2 });
+    logger.info('an info');
+    logger.warn('a warning');
+    logger.error('an error');
+    logger.fatal('a fatal error');
 
-  const contextLogs = allLogs.filter((log) => log.context);
-  expect(contextLogs).toHaveLength(3);
+    const logs = logger.getLogs();
+    expect(logs.map((log) => log.message)).toStrictEqual([
+      'an error',
+      'a fatal error',
+    ]);
 
-  expect(
-    allLogs.map((log) => ({
-      message: log.message,
-      meta: log.meta,
-      level: log.level,
-      levelLabel: log.levelLabel,
-    })),
-  ).toMatchSnapshot();
+    expect(removeVariableValues(logs)).toMatchSnapshot();
+  });
 
-  const childLogs = child.getLogs();
+  it('using pino and pino child', () => {
+    const logger = new FifoLogger();
+    // if we are using a library that logs in pino we can sent the pino instance
+    const pino = logger.getPino();
+    pino.warn('a warning with object');
+    pino.warn({ c: 'Hello' }, 'a warning');
 
-  console.log(JSON.stringify(allLogs, null, 2));
+    const pinoChild = pino.child({ namespace: 'a', a: 1 });
+    pinoChild.info('from pinoChild');
+    const pinoSubChild = pinoChild.child({ namespace: 'b', b: 2 });
+    pinoSubChild.info('from pinoSubChild');
 
-  expect(childLogs).toHaveLength(3);
-  expect(
-    childLogs.map((log) => ({ message: log.message, meta: log.meta })),
-  ).toMatchSnapshot();
+    expect(
+      logger.getLogs().map((log) => ({ message: log.message, meta: log.meta })),
+    ).toMatchInlineSnapshot(`
+      [
+        {
+          "message": "a warning with object",
+          "meta": {},
+        },
+        {
+          "message": "a warning",
+          "meta": {
+            "c": "Hello",
+          },
+        },
+        {
+          "message": "from pinoChild",
+          "meta": {
+            "a": 1,
+            "namespace": "a",
+          },
+        },
+        {
+          "message": "from pinoSubChild",
+          "meta": {
+            "a": 1,
+            "b": 2,
+            "namespace": "b",
+          },
+        },
+      ]
+    `);
+  });
 
-  const atLeastErrorLogs = child.getLogs({ minLevel: 'error' });
-  expect(atLeastErrorLogs).toHaveLength(2);
+  it('child', () => {
+    const logger = new FifoLogger();
+    // we can directly log at the level of the logger, we hide the fact that we are using pino
+    logger.info('an info');
 
-  const errorLogs = child.getLogs({ level: 'error' });
-  expect(errorLogs).toHaveLength(1);
+    // we can also get a child logger, by default it will use a random uuid
+    const child = logger.child();
+    child.error('an error in a child');
+    child.fatal(new Error('Fatal error'));
 
-  const containsErrorObject = allLogs.filter((log) => log.error);
-  expect(containsErrorObject).toHaveLength(1);
+    const allLogs = logger.getLogs();
+    expect(allLogs).toHaveLength(3);
+
+    const contextLogs = allLogs.filter((log) => log.context);
+    expect(contextLogs).toHaveLength(2);
+
+    expect(removeVariableValues(allLogs)).toMatchSnapshot();
+
+    const childLogs = child.getLogs();
+
+    expect(childLogs).toHaveLength(2);
+    expect(removeVariableValues(childLogs)).toMatchSnapshot();
+
+    const atLeastErrorLogs = child.getLogs({ minLevel: 'error' });
+    expect(atLeastErrorLogs).toHaveLength(2);
+
+    const errorLogs = child.getLogs({ level: 'error' });
+    expect(errorLogs).toHaveLength(1);
+
+    const containsErrorObject = allLogs.filter((log) => log.error);
+    expect(containsErrorObject).toHaveLength(1);
+  });
 });
+
+function removeVariableValues(logs: LogEntry[]): LogEntry[] {
+  return logs.map((log) => ({
+    ...log,
+    time: 42,
+    context: log.context ? 'context' : undefined,
+  }));
+}

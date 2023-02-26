@@ -19,24 +19,24 @@ By default it will keep the 10'000 last events that can easily be retrieved and 
 import { FifoLogger } from 'fifo-logger';
 
 const logger = new Logger({
-  limit: 10000, // default value
+  limit: 1000, // default value
   level: 'info', // default value
 });
 
-logger.trace('This is an trace');
-logger.debug('This is an debug');
-logger.info('This is an info');
-logger.warn('This is a warning');
-logger.error('This is a error');
-logger.fatal('This is fatal');
+logger.trace('a trace');
+logger.debug('a debug');
+logger.info('an info');
+logger.warn('a warning');
+logger.error('a error');
+logger.fatal('fatal');
 
 // you have also the possibility to log an object or object + message
 
-logger.warn({ a: 1, b: 2, c: 'Hello' }, 'This is a warning');
+logger.warn({ a: 1, b: 2, c: 'Hello' }, 'a warning');
 
 // errors can also be directly added to the logger
 
-logger.fatal(new Error('This is a fatal error'));
+logger.fatal(new Error('a fatal error'));
 
 // to get the logs
 
