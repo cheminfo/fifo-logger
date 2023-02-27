@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
-import { Logger } from 'pino';
 
-import { getPino } from './getPino';
+import { LevelWithSilent, BaseLogger, LogFunction } from './BaseLogger';
+import { LevelNumber, levels } from './levels';
 
 export type LogEntry = {
   time: number;
@@ -25,35 +25,40 @@ export type FifoLoggerOptions = {
    * @default 'info'
    *
    */
-  level?: string;
+  level?: LevelWithSilent;
   /**
    * Called when a new log is added.
    */
   onChange?: (log: LogEntry, logs: LogEntry[]) => void;
+  bindings?: Record<string, any>;
 };
 
 /**
  * A FIFO logger that stores the last events in an array.
  */
-export class FifoLogger {
+export class FifoLogger implements BaseLogger {
   private events: LogEntry[];
-  private pino: Logger;
-  private uuids: string[] = [];
+  private uuids: string[];
+  private levelAsNumber: number;
+  private limit: number;
+  private bindings: Record<string, any>;
+  private onChange?: (log: LogEntry, logs: LogEntry[]) => void;
+  level: LevelWithSilent;
 
   constructor(options: FifoLoggerOptions = {}) {
     this.uuids = [v4()];
     this.events = [];
-    this.pino = getPino(this.events, this.uuids, options);
-  }
-
-  getPino(): Logger {
-    return this.pino;
+    this.level = options.level || 'info';
+    this.levelAsNumber = levels.values[this.level];
+    this.limit = options.limit ?? 1000;
+    this.bindings = options.bindings ?? {};
+    this.onChange = options.onChange;
   }
 
   getLogs(
     options: {
-      minLevel?: string;
-      level?: string;
+      minLevel?: LevelWithSilent;
+      level?: LevelWithSilent;
       includeChildren?: boolean;
     } = {},
   ): LogEntry[] {
@@ -67,14 +72,14 @@ export class FifoLogger {
     }
 
     if (level) {
-      const levelNumber = Number(this.pino.levels.values[level]);
+      const levelNumber = Number(levels.values[level]);
       if (Number.isNaN(levelNumber)) {
         throw new Error('Invalid level');
       }
       logs = logs.filter((log) => log.level === levelNumber);
     }
     if (minLevel) {
-      const levelNumber = Number(this.pino.levels.values[minLevel]);
+      const levelNumber = Number(levels.values[minLevel]);
       if (Number.isNaN(levelNumber)) {
         throw new Error('Invalid level');
       }
@@ -94,42 +99,81 @@ export class FifoLogger {
 
     newFifoLogger.events = this.events;
     newFifoLogger.uuids = [v4(), ...this.uuids];
-
-    newFifoLogger.pino = this.pino.child({
-      uuids: newFifoLogger.uuids,
-      ...bindings,
-    });
-
+    newFifoLogger.level = this.level;
+    newFifoLogger.bindings = { ...this.bindings, ...bindings };
     return newFifoLogger;
   }
 
-  trace(...args: any[]) {
-    //@ts-expect-error not easy to fix
-    this.pino.trace(...args);
+  trace(obj: Record<string, unknown>, message: string): void;
+  trace(message: string): void;
+  trace(value: unknown, message?: string) {
+    addEvent(this, levels.values.trace, value, message);
   }
 
-  debug(...args: any[]) {
-    //@ts-expect-error not easy to fix
-    this.pino.debug(...args);
+  debug(obj: Record<string, unknown>, message: string): void;
+  debug(message: string): void;
+  debug(value: unknown, message?: string) {
+    addEvent(this, levels.values.debug, value, message);
   }
 
-  info(...args: any[]) {
-    //@ts-expect-error not easy to fix
-    this.pino.info(...args);
+  info(obj: Record<string, unknown>, message: string): void;
+  info(message: string): void;
+  info(value: unknown, message?: string) {
+    addEvent(this, levels.values.info, value, message);
   }
 
-  warn(...args: any[]) {
-    //@ts-expect-error not easy to fix
-    this.pino.warn(...args);
+  warn(obj: Record<string, unknown>, message: string): void;
+  warn(message: string): void;
+  warn(value: unknown, message?: string) {
+    addEvent(this, levels.values.warn, value, message);
   }
 
-  error(...args: any[]) {
-    //@ts-expect-error not easy to fix
-    this.pino.error(...args);
+  error(obj: Record<string, unknown>, message: string): void;
+  error(message: string): void;
+  error(value: unknown, message?: string) {
+    addEvent(this, levels.values.error, value, message);
   }
 
-  fatal(...args: any[]) {
-    //@ts-expect-error not easy to fix
-    this.pino.fatal(...args);
+  fatal(obj: Record<string, unknown>, message: string): void;
+  fatal(message: string): void;
+  fatal(value: unknown, message?: string) {
+    addEvent(this, levels.values.fatal, value, message);
+  }
+}
+
+function addEvent(
+  logger: any,
+  level: LevelNumber,
+  value: unknown,
+  message?: string,
+) {
+  if (level < logger.levelAsNumber) return;
+
+  const event: Partial<LogEntry> = {
+    level,
+    levelLabel: levels.labels[level],
+    time: Date.now(),
+    uuids: logger.uuids,
+  };
+  if (value instanceof Error) {
+    event.message = value.toString();
+    event.error = value;
+    event.meta = { ...logger.bindings };
+  } else if (message && typeof value === 'object') {
+    event.message = message;
+    event.meta = { ...logger.bindings, ...value };
+  } else if (typeof value === 'string') {
+    event.message = value;
+    event.meta = { ...logger.bindings };
+  } else {
+    throw new Error('Invalid arguments');
+  }
+
+  logger.events.push(event);
+  if (logger.events.length > logger.limit) {
+    logger.events.shift();
+  }
+  if (logger.onChange) {
+    logger.onChange(event, logger.events);
   }
 }

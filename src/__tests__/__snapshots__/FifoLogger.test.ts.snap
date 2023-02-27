@@ -1,5 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FifoLogger logging message, object, error 1`] = `
+[
+  {
+    "error": undefined,
+    "level": 30,
+    "levelLabel": "info",
+    "message": "an info",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+  {
+    "error": undefined,
+    "level": 30,
+    "levelLabel": "info",
+    "message": "an info with an object ",
+    "meta": {
+      "object": "ab",
+    },
+    "time": 42,
+    "uuids": 1,
+  },
+]
+`;
+
 exports[`FifoLogger simple case, default level and limit 1`] = `
 [
   {

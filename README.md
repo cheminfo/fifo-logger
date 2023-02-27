@@ -5,7 +5,7 @@
 [![Test coverage][codecov-image]][codecov-url]
 [![npm download][download-image]][download-url]
 
-Simple event logger for the browser and node.js that wraps `pino`.
+Simple event logger for the browser and node.js inspired by `pino`.
 
 By default it will keep the 10'000 last events that can easily be retrieved and filtered.
 
