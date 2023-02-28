@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 
-import { LevelWithSilent, BaseLogger, LogFunction } from './BaseLogger';
-import { LevelNumber, levels } from './levels';
+import { BaseLogger } from './BaseLogger';
+import { LevelNumber, LevelWithSilent, levels } from './levels';
 
 export type LogEntry = {
   time: number;
@@ -29,7 +29,7 @@ export type FifoLoggerOptions = {
   /**
    * Called when a new log is added.
    */
-  onChange?: (log: LogEntry, logs: LogEntry[]) => void;
+  onChange?: (log: LogEntry, logs: LogEntry[], info: { depth: number }) => void;
   bindings?: Record<string, any>;
 };
 
@@ -42,7 +42,11 @@ export class FifoLogger implements BaseLogger {
   private levelAsNumber: number;
   private limit: number;
   private bindings: Record<string, any>;
-  private onChange?: (log: LogEntry, logs: LogEntry[]) => void;
+  private onChange?: (
+    log: LogEntry,
+    logs: LogEntry[],
+    info: { depth: number },
+  ) => void;
   level: LevelWithSilent;
 
   constructor(options: FifoLoggerOptions = {}) {
@@ -96,7 +100,7 @@ export class FifoLogger implements BaseLogger {
 
   child(bindings?: Record<string, any>) {
     const newFifoLogger = new FifoLogger();
-
+    newFifoLogger.onChange = this.onChange;
     newFifoLogger.events = this.events;
     newFifoLogger.uuids = [v4(), ...this.uuids];
     newFifoLogger.level = this.level;
@@ -106,37 +110,43 @@ export class FifoLogger implements BaseLogger {
 
   trace(obj: Record<string, unknown>, message: string): void;
   trace(message: string): void;
+  trace(error: Error): void;
   trace(value: unknown, message?: string) {
     addEvent(this, levels.values.trace, value, message);
   }
 
   debug(obj: Record<string, unknown>, message: string): void;
   debug(message: string): void;
-  debug(value: unknown, message?: string) {
+  debug(error: Error): void;
+  debug(value: unknown, message?: string): void {
     addEvent(this, levels.values.debug, value, message);
   }
 
   info(obj: Record<string, unknown>, message: string): void;
   info(message: string): void;
-  info(value: unknown, message?: string) {
+  info(error: Error): void;
+  info(value: unknown, message?: string): void {
     addEvent(this, levels.values.info, value, message);
   }
 
   warn(obj: Record<string, unknown>, message: string): void;
   warn(message: string): void;
-  warn(value: unknown, message?: string) {
+  warn(error: Error): void;
+  warn(value: unknown, message?: string): void {
     addEvent(this, levels.values.warn, value, message);
   }
 
   error(obj: Record<string, unknown>, message: string): void;
   error(message: string): void;
-  error(value: unknown, message?: string) {
+  error(error: Error): void;
+  error(value: unknown, message?: string): void {
     addEvent(this, levels.values.error, value, message);
   }
 
   fatal(obj: Record<string, unknown>, message: string): void;
   fatal(message: string): void;
-  fatal(value: unknown, message?: string) {
+  fatal(error: Error): void;
+  fatal(value: unknown, message?: string): void {
     addEvent(this, levels.values.fatal, value, message);
   }
 }
@@ -162,7 +172,7 @@ function addEvent(
   } else if (message && typeof value === 'object') {
     event.message = message;
     event.meta = { ...logger.bindings, ...value };
-  } else if (typeof value === 'string') {
+  } else if (!message && typeof value === 'string') {
     event.message = value;
     event.meta = { ...logger.bindings };
   } else {
@@ -174,6 +184,6 @@ function addEvent(
     logger.events.shift();
   }
   if (logger.onChange) {
-    logger.onChange(event, logger.events);
+    logger.onChange(event, logger.events, { depth: logger.uuids.length });
   }
 }

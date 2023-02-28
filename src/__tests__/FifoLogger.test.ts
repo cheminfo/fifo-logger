@@ -37,11 +37,23 @@ describe('FifoLogger', () => {
     expect(removeVariableValues(logs)).toMatchSnapshot();
   });
 
+  it('test types', () => {
+    const logger = new FifoLogger({ limit: 2 });
+    expect(() => {
+      // @ts-expect-error should not be able to log without message
+      logger.info();
+    }).toThrow('Invalid arguments');
+    expect(() => {
+      // @ts-expect-error should not be able to log with 2 strings
+      logger.info('a', 'b');
+    }).toThrow('Invalid arguments');
+    expect(logger.getLogs()).toHaveLength(0);
+  });
+
   it('logging message, object, error', () => {
     const logger = new FifoLogger();
     logger.info('an info');
     logger.info({ object: 'ab' }, 'an info with an object ');
-    logger.trace('a', 'trace');
     const logs = logger.getLogs();
     expect(
       logs.map((log) => ({ meta: log.meta, message: log.message })),
@@ -166,6 +178,31 @@ describe('FifoLogger', () => {
       onChange: (log, logs) => {
         results.push(log.message);
         results.push(logs.length);
+      },
+    });
+    logger.info('first info');
+    logger.info('second info');
+    expect(results).toEqual(['first info', 1, 'second info', 2]);
+    const childLogger = logger.child();
+    childLogger.info('info in child');
+    expect(results).toEqual([
+      'first info',
+      1,
+      'second info',
+      2,
+      'info in child',
+      3,
+    ]);
+  });
+
+  it('onchange takes only depth 1', () => {
+    const results: any = [];
+    const logger = new FifoLogger({
+      onChange: (log, logs, info) => {
+        if (info.depth === 1) {
+          results.push(log.message);
+          results.push(logs.length);
+        }
       },
     });
     logger.info('first info');

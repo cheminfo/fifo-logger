@@ -5,6 +5,9 @@ export interface LogFunction {
   (message: string): void;
 }
 
+// The following code was taken from https://github.com/pinojs/pino/tree/1e678eb406ea1f0f96d372695cfdf5e34535cd42
+// License: https://github.com/pinojs/pino/blob/1e678eb406ea1f0f96d372695cfdf5e34535cd42/LICENSE
+
 export interface BaseLogger {
   /**
    * Set this property to the desired logging level. In order of priority, available levels are:
