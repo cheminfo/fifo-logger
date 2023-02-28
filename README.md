@@ -18,7 +18,7 @@ By default it will keep the 10'000 last events that can easily be retrieved and 
 ```js
 import { FifoLogger } from 'fifo-logger';
 
-const logger = new Logger({
+const logger = new FifoLogger({
   limit: 1000, // default value
   level: 'info', // by default we will not log the level under 'info' (trace and debug)
 });
@@ -50,7 +50,7 @@ A `child` logger may be created in order to store specific related logs. Each lo
 ```js
 import { FifoLogger } from 'fifo-logger';
 
-const logger = new Logger();
+const logger = new FifoLogger();
 logger.info('an info');
 
 const childLogger = logger.child();
@@ -78,6 +78,7 @@ const logger = new FifoLogger({
     console.log(log, logs, info);
   },
 });
+logger.info('Hello world');
 
 // info contains 'depth' starting at 1
 ```
