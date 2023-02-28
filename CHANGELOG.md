@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/cheminfo/fifo-logger/compare/v0.1.0...v0.2.0) (2023-02-28)
+
+
+### Features
+
+* improve typing ([9fe6675](https://github.com/cheminfo/fifo-logger/commit/9fe66750fe68e3c89581011a21c9e2fc5947cca6))
+
 ## [0.1.0](https://github.com/cheminfo/fifo-logger/compare/v0.0.1...v0.1.0) (2023-02-26)
 
 
