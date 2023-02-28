@@ -1,8 +1,23 @@
+import { BaseLogger } from 'pino';
 import { throttle } from 'throttle-debounce';
 
 import { FifoLogger, LogEntry } from '../FifoLogger';
 
 describe('FifoLogger', () => {
+  it('test pino compatibility', () => {
+    /*
+    interface LogFn {
+        // TODO: why is this different from `obj: object` or `obj: any`?
+        <T extends object>(obj: T, msg?: string, ...args: any[]): void;
+        (obj: unknown, msg?: string, ...args: any[]): void;
+        (msg: string, ...args: any[]): void;
+    }
+    */
+
+    //@ts-expect-error should be ok
+    const logger: Omit<BaseLogger, 'silent'> = new FifoLogger();
+    expect(logger.info).toBeDefined();
+  });
   it('simple case, default level and limit', () => {
     const logger = new FifoLogger();
     logger.trace('a trace');
