@@ -35,6 +35,12 @@ describe('FifoLogger', () => {
       'a fatal error',
     ]);
     expect(removeVariableValues(logs)).toMatchSnapshot();
+
+    const errors = logger.getLogs({ minLevel: 'error' });
+    expect(errors).toHaveLength(2);
+
+    const oneError = logger.getLogs({ level: 'error' });
+    expect(oneError).toHaveLength(1);
   });
 
   it('simple case, limit 2', () => {
