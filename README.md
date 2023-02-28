@@ -65,7 +65,7 @@ anotherLogger.info('from another child');
 console.log(logger.getLogs()); // 1 element
 console.log(logger.getLogs({ includeChildren: true })); // 4 elements
 console.log(childLogger.getLogs()); // 1 element
-console.log(childLogger.getLogs({ includechilren: true })); // 3 elements
+console.log(childLogger.getLogs({ includeChildren: true })); // 3 elements
 ```
 
 ## Callback when new logs are added
@@ -74,10 +74,12 @@ If you need to update the log list based on new addition you can add the `onChan
 
 ```js
 const logger = new FifoLogger({
-  onChange: (log, logs) => {
-    console.log(log, logs);
+  onChange: (log, logs, info) => {
+    console.log(log, logs, info);
   },
 });
+
+// info contains 'depth' starting at 1
 ```
 
 ## Callback with throttling
@@ -124,7 +126,3 @@ console.log(results);
 [codecov-url]: https://codecov.io/gh/cheminfo/fifo-logger
 [download-image]: https://img.shields.io/npm/dm/fifo-logger.svg
 [download-url]: https://www.npmjs.com/package/fifo-logger
-
-```
-
-```
