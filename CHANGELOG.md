@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://github.com/cheminfo/fifo-logger/compare/v0.2.0...v0.3.0) (2023-03-07)
+
+
+### Features
+
+* deploy on lactame CDN ([a3bfbc7](https://github.com/cheminfo/fifo-logger/commit/a3bfbc788aa22cac6ec7b4a2c88961e0bfc6b057))
+
+
+### Documentation
+
+* add docs for bindings ([5216421](https://github.com/cheminfo/fifo-logger/commit/5216421c7f36be80b4da6556686efb748a570532))
+* correct new Logger in readme ([19cde0e](https://github.com/cheminfo/fifo-logger/commit/19cde0e6615d49bd921331fc7b0c432e2aefb7ee))
+
 ## [0.2.0](https://github.com/cheminfo/fifo-logger/compare/v0.1.0...v0.2.0) (2023-02-28)
 
 
