@@ -55,11 +55,30 @@ describe('FifoLogger', () => {
       'an error',
       'a fatal error',
     ]);
+
     expect(removeVariableValues(logs)).toMatchSnapshot();
+
+    logger.setLimit(4);
+    logger.info('an info');
+    logger.warn('a warning');
+    logger.error('an error');
+    logger.fatal('a fatal error');
+
+    expect(logger.getLogs()).toHaveLength(4);
+    logger.setLimit(2);
+    expect(logger.getLogs()).toHaveLength(2);
+
+    logger.setLevel('fatal');
+    logger.info('an info');
+    logger.warn('a warning');
+    logger.error('an error');
+    logger.fatal('a fatal error');
+
+    expect(removeVariableValues(logger.getLogs())).toMatchSnapshot();
   });
 
   it('test types', () => {
-    const logger = new FifoLogger({ limit: 2 });
+    const logger = new FifoLogger();
     expect(() => {
       // @ts-expect-error should not be able to log without message
       logger.info();

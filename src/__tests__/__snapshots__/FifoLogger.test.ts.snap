@@ -88,3 +88,26 @@ exports[`FifoLogger simple case, limit 2 1`] = `
   },
 ]
 `;
+
+exports[`FifoLogger simple case, limit 2 2`] = `
+[
+  {
+    "error": undefined,
+    "level": 60,
+    "levelLabel": "fatal",
+    "message": "a fatal error",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+  {
+    "error": undefined,
+    "level": 60,
+    "levelLabel": "fatal",
+    "message": "a fatal error",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+]
+`;

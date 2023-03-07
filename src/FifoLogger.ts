@@ -61,6 +61,22 @@ export class FifoLogger {
     this.onChange = options.onChange;
   }
 
+  setLevel(level: LevelWithSilent) {
+    this.level = level;
+    this.levelAsNumber = levels.values[level];
+  }
+
+  setLimit(limit: number) {
+    this.limit = limit;
+    this.checkSize();
+  }
+
+  checkSize() {
+    if (this.events.length > this.limit) {
+      this.events.splice(0, this.events.length - this.limit);
+    }
+  }
+
   getLogs(
     options: {
       minLevel?: LevelWithSilent;
@@ -182,9 +198,7 @@ function addEvent(
   }
 
   logger.events.push(event);
-  if (logger.events.length > logger.limit) {
-    logger.events.shift();
-  }
+  logger.checkSize();
   if (logger.onChange) {
     logger.onChange(event, logger.events, { depth: logger.uuids.length });
   }
