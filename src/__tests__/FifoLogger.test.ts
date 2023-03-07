@@ -126,6 +126,43 @@ describe('FifoLogger', () => {
     expect(grandchild.getLogs({ includeChildren: true })).toHaveLength(1);
   });
 
+  it('clear', () => {
+    const messages: (string | undefined)[] = [];
+    const depths: number[] = [];
+    const logger = new FifoLogger({
+      onChange: (log, logs, info) => {
+        messages.push(log?.message);
+        depths.push(info.depth);
+      },
+    });
+    logger.info('an info');
+
+    const child = logger.child();
+    child.warn('a warn in a child');
+
+    const grandchild = child.child();
+    grandchild.error('an error in a grandchild');
+
+    child.warn('another warn in a child');
+    expect(logger.getLogs({ includeChildren: true })).toHaveLength(4);
+    expect(child.getLogs({ includeChildren: true })).toHaveLength(3);
+    expect(grandchild.getLogs({ includeChildren: true })).toHaveLength(1);
+
+    child.clear();
+    expect(logger.getLogs({ includeChildren: true })).toHaveLength(1);
+    expect(child.getLogs({ includeChildren: true })).toHaveLength(0);
+    expect(grandchild.getLogs({ includeChildren: true })).toHaveLength(0);
+
+    expect(messages).toStrictEqual([
+      'an info',
+      'a warn in a child',
+      'an error in a grandchild',
+      'another warn in a child',
+      undefined,
+    ]);
+    expect(depths).toStrictEqual([1, 2, 3, 2, 2]);
+  });
+
   it('error', () => {
     const logger = new FifoLogger();
     logger.info('an info');
@@ -213,10 +250,10 @@ describe('FifoLogger', () => {
   });
 
   it('onchange', () => {
-    const results: any = [];
+    const results: (string | number | undefined)[] = [];
     const logger = new FifoLogger({
       onChange: (log, logs) => {
-        results.push(log.message);
+        results.push(log?.message);
         results.push(logs.length);
       },
     });
@@ -240,7 +277,7 @@ describe('FifoLogger', () => {
     const logger = new FifoLogger({
       onChange: (log, logs, info) => {
         if (info.depth === 1) {
-          results.push(log.message);
+          results.push(log?.message);
           results.push(logs.length);
         }
       },

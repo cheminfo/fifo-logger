@@ -28,7 +28,11 @@ export type FifoLoggerOptions = {
   /**
    * Called when a new log is added.
    */
-  onChange?: (log: LogEntry, logs: LogEntry[], info: { depth: number }) => void;
+  onChange?: (
+    log: LogEntry | undefined,
+    logs: LogEntry[],
+    info: { depth: number },
+  ) => void;
   /**
    * An object of key-value pairs to include in log lines as properties.
    */
@@ -45,7 +49,7 @@ export class FifoLogger {
   private limit: number;
   private bindings: Record<string, any>;
   private onChange?: (
-    log: LogEntry,
+    log: LogEntry | undefined,
     logs: LogEntry[],
     info: { depth: number },
   ) => void;
@@ -75,6 +79,19 @@ export class FifoLogger {
     if (this.events.length > this.limit) {
       this.events.splice(0, this.events.length - this.limit);
     }
+  }
+
+  /**
+   * Remove events from the current logger and its children.
+   * @param options
+   */
+  clear() {
+    for (let i = this.events.length - 1; i >= 0; i--) {
+      if (this.events[i].uuids.includes(this.uuids[0])) {
+        this.events.splice(i, 1);
+      }
+    }
+    this.onChange?.(undefined, this.events, { depth: this.uuids.length });
   }
 
   getLogs(
