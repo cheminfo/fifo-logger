@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/cheminfo/fifo-logger/compare/v0.4.0...v0.5.0) (2023-03-07)
+
+
+### Features
+
+* add .clear method ([89b5e0c](https://github.com/cheminfo/fifo-logger/commit/89b5e0c4515ce54abf3ddbf35b6a987d271be02f))
+
 ## [0.4.0](https://github.com/cheminfo/fifo-logger/compare/v0.3.0...v0.4.0) (2023-03-07)
 
 
