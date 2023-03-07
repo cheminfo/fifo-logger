@@ -1,6 +1,6 @@
 {
   "name": "fifo-logger",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Simple event logger for the browser and node.js",
   "main": "./lib/index.js",
   "module": "./lib-esm/index.js",
