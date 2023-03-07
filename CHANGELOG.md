@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/cheminfo/fifo-logger/compare/v0.3.0...v0.4.0) (2023-03-07)
+
+
+### Features
+
+* add setLevel and setLimit ([4377c98](https://github.com/cheminfo/fifo-logger/commit/4377c98bbe20f1becd9c92fe83bf9397221f7a0d))
+
+
+### Documentation
+
+* add info about usage in the browser ([9cfa5f3](https://github.com/cheminfo/fifo-logger/commit/9cfa5f3640d063274da117f0116fa81b50e64146))
+
 ## [0.3.0](https://github.com/cheminfo/fifo-logger/compare/v0.2.0...v0.3.0) (2023-03-07)
 
 
