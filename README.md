@@ -115,6 +115,43 @@ console.log(results);
 // ['first info', 1, 'an info after 120ms', 3]
 ```
 
+## In the browser
+
+```html
+<html>
+  <head>
+    <script
+      src="https://www.lactame.com/lib/fifo-logger/0.3.0/fifo-logger.js"
+      type="text/javascript"
+    ></script>
+    <script Logger="fifo-logger" type="text/javascript">
+      const logger = new FifoLogger.FifoLogger({
+        onChange: (log, logs) => {
+          console.log(logs);
+          document.getElementById('logs').innerHTML =
+            '<table><tr><th>Level</th><th>Message</th></tr>' +
+            logs
+              .map((log) => {
+                return `<tr><td>${log.level}</td><td>${log.message}</td></tr>`;
+              })
+              .join('') +
+            '</table>';
+        },
+      });
+    </script>
+  </head>
+  <body>
+    <button onclick="logger.warn('warning')">Warning</button>
+    <div id="logs"></div>
+
+    <script>
+      logger.info('Hello World!');
+      logger.error('This is an error');
+    </script>
+  </body>
+</html>
+```
+
 ## License
 
 [MIT](./LICENSE)
