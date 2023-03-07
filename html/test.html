@@ -1,0 +1,30 @@
+<!--  need first to `npm run build` -->
+<html>
+  <head>
+    <script src="../dist/fifo-logger.js" type="text/javascript"></script>
+    <script Logger="fifo-logger" type="text/javascript">
+      const logger = new FifoLogger.FifoLogger({
+        onChange: (log, logs) => {
+          console.log(logs);
+          document.getElementById('logs').innerHTML =
+            '<table><tr><th>Level</th><th>Message</th></tr>' +
+            logs
+              .map((log) => {
+                return `<tr><td>${log.level}</td><td>${log.message}</td></tr>`;
+              })
+              .join('') +
+            '</table>';
+        },
+      });
+    </script>
+  </head>
+  <body>
+    <button onclick="logger.warn('warning')">Warning</button>
+    <div id="logs"></div>
+
+    <script>
+      logger.info('Hello World!');
+      logger.error('This is an error');
+    </script>
+  </body>
+</html>
