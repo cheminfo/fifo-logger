@@ -29,6 +29,9 @@ export type FifoLoggerOptions = {
    * Called when a new log is added.
    */
   onChange?: (log: LogEntry, logs: LogEntry[], info: { depth: number }) => void;
+  /**
+   * An object of key-value pairs to include in log lines as properties.
+   */
   bindings?: Record<string, any>;
 };
 
