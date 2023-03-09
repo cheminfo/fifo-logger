@@ -111,7 +111,8 @@ describe('FifoLogger', () => {
       // @ts-expect-error should not be able to log with 2 strings
       logger.info('a', 'b');
     }).toThrow('Invalid arguments');
-    expect(logger.getLogs()).toHaveLength(0);
+    logger.info({}, '');
+    expect(logger.getLogs()).toHaveLength(1);
   });
 
   it('logging message, object, error', () => {

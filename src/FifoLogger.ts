@@ -204,10 +204,10 @@ function addEvent(
     event.message = value.toString();
     event.error = value;
     event.meta = { ...logger.bindings };
-  } else if (message && typeof value === 'object') {
+  } else if (message !== undefined && typeof value === 'object') {
     event.message = message;
     event.meta = { ...logger.bindings, ...value };
-  } else if (!message && typeof value === 'string') {
+  } else if (message === undefined && typeof value === 'string') {
     event.message = value;
     event.meta = { ...logger.bindings };
   } else {
