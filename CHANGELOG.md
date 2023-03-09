@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/cheminfo/fifo-logger/compare/v0.5.1...v0.5.2) (2023-03-09)
+
+
+### Bug Fixes
+
+* logger limit was not passed to child logger ([681cf2b](https://github.com/cheminfo/fifo-logger/commit/681cf2b30b52f62aff7102b68dceab7f05e27529))
+
 ## [0.5.1](https://github.com/cheminfo/fifo-logger/compare/v0.5.0...v0.5.1) (2023-03-09)
 
 
