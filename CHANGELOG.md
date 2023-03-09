@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.3](https://github.com/cheminfo/fifo-logger/compare/v0.5.2...v0.5.3) (2023-03-09)
+
+
+### Bug Fixes
+
+* deal correctly with empty message ([92b8b74](https://github.com/cheminfo/fifo-logger/commit/92b8b747cf4b23d94f4085fd9463836f416b3812))
+
 ## [0.5.2](https://github.com/cheminfo/fifo-logger/compare/v0.5.1...v0.5.2) (2023-03-09)
 
 
