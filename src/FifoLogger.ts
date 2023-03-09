@@ -139,6 +139,7 @@ export class FifoLogger {
     newFifoLogger.events = this.events;
     newFifoLogger.uuids = [v4(), ...this.uuids];
     newFifoLogger.level = this.level;
+    newFifoLogger.levelAsNumber = this.levelAsNumber;
     newFifoLogger.bindings = { ...this.bindings, ...bindings };
     return newFifoLogger;
   }

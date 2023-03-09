@@ -77,6 +77,23 @@ describe('FifoLogger', () => {
     expect(removeVariableValues(logger.getLogs())).toMatchSnapshot();
   });
 
+  it('logger level', () => {
+    const logger = new FifoLogger({ level: 'error' });
+    logger.info('an info');
+    logger.warn('a warning');
+    logger.error('an error');
+    logger.fatal('a fatal error');
+
+    expect(logger.getLogs()).toHaveLength(2);
+
+    const childLogger = logger.child();
+    childLogger.warn('a warning');
+    childLogger.error('an error');
+    expect(childLogger.getLogs()).toHaveLength(1);
+
+    expect(logger.getLogs({ includeChildren: true })).toHaveLength(3);
+  });
+
   it('test types', () => {
     const logger = new FifoLogger();
     expect(() => {
