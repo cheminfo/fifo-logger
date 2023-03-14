@@ -1,6 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 
-import { LevelNumber, LevelWithSilent, levels, Level } from './levels';
+import { LevelNumber, LevelWithSilent, levels } from './levels';
 
 export type LogEntry = {
   time: number;
