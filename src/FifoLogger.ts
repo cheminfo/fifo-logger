@@ -1,11 +1,11 @@
 import { v4 } from '@lukeed/uuid';
 
-import { LevelNumber, LevelWithSilent, levels } from './levels';
+import { LevelNumber, LevelWithSilent, levels, Level } from './levels';
 
 export type LogEntry = {
   time: number;
-  level: number;
-  levelLabel: string;
+  level: LevelNumber;
+  levelLabel: LevelWithSilent;
   uuids: string[];
   message: string;
   meta?: Record<string, any>;
