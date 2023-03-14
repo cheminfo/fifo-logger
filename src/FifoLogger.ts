@@ -4,8 +4,8 @@ import { LevelNumber, LevelWithSilent, levels } from './levels';
 
 export type LogEntry = {
   time: number;
-  level: number;
-  levelLabel: string;
+  level: LevelNumber;
+  levelLabel: LevelWithSilent;
   uuids: string[];
   message: string;
   meta?: Record<string, any>;

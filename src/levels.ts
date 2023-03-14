@@ -2,10 +2,14 @@ export type LevelNumber = 0 | 10 | 20 | 30 | 40 | 50 | 60;
 export type Level = 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace';
 export type LevelWithSilent = Level | 'silent';
 
-export const levels: {
+type DeepReadOnly<T> = {
+  readonly [P in keyof T]: DeepReadOnly<T[P]>;
+};
+
+export const levels: DeepReadOnly<{
   values: Record<LevelWithSilent, LevelNumber>;
   labels: Record<LevelNumber, LevelWithSilent>;
-} = {
+}> = {
   values: {
     fatal: 60,
     error: 50,
