@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.4](https://github.com/cheminfo/fifo-logger/compare/v0.5.3...v0.5.4) (2023-03-14)
+
+
+### Bug Fixes
+
+* set correct types to `level` and `levelLabel` properties ([#11](https://github.com/cheminfo/fifo-logger/issues/11)) ([26b4c5d](https://github.com/cheminfo/fifo-logger/commit/26b4c5d46c17ea702c227b32664b23c823810944))
+
 ## [0.5.3](https://github.com/cheminfo/fifo-logger/compare/v0.5.2...v0.5.3) (2023-03-09)
 
 
