@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/cheminfo/fifo-logger/compare/v0.5.4...v0.6.0) (2023-03-15)
+
+
+### Features
+
+* add sequential id ([641a34d](https://github.com/cheminfo/fifo-logger/commit/641a34d730df2ae6776d356d88ccf200626cd500))
+
 ## [0.5.4](https://github.com/cheminfo/fifo-logger/compare/v0.5.3...v0.5.4) (2023-03-14)
 
 
