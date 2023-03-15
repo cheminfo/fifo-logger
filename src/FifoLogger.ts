@@ -3,6 +3,7 @@ import { v4 } from '@lukeed/uuid';
 import { LevelNumber, LevelWithSilent, levels } from './levels';
 
 export type LogEntry = {
+  id: number;
   time: number;
   level: LevelNumber;
   levelLabel: LevelWithSilent;
@@ -43,6 +44,7 @@ export type FifoLoggerOptions = {
  * A FIFO logger that stores the last events in an array.
  */
 export class FifoLogger {
+  private lastID: number;
   private initialOptions: FifoLoggerOptions;
   private events: LogEntry[];
   private uuids: string[];
@@ -57,6 +59,7 @@ export class FifoLogger {
   level: LevelWithSilent;
 
   constructor(options: FifoLoggerOptions = {}) {
+    this.lastID = 0;
     this.initialOptions = options;
     this.uuids = [v4()];
     this.events = [];
@@ -195,6 +198,7 @@ function addEvent(
   if (level < logger.levelAsNumber) return;
 
   const event: Partial<LogEntry> = {
+    id: ++logger.lastID,
     level,
     levelLabel: levels.labels[level],
     time: Date.now(),
