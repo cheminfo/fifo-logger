@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/cheminfo/fifo-logger/compare/v0.6.0...v0.6.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* children share the same incremental id ([c7f6ea9](https://github.com/cheminfo/fifo-logger/commit/c7f6ea958d9431b02f3bf61274cdcbe673eca6e2))
+
 ## [0.6.0](https://github.com/cheminfo/fifo-logger/compare/v0.5.4...v0.6.0) (2023-03-15)
 
 
