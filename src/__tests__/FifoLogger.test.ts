@@ -18,6 +18,7 @@ describe('FifoLogger', () => {
     const logger: Omit<BaseLogger, 'silent'> = new FifoLogger();
     expect(logger.info).toBeDefined();
   });
+
   it('simple case, default level and limit', () => {
     const logger = new FifoLogger();
     logger.trace('a trace');
@@ -149,6 +150,11 @@ describe('FifoLogger', () => {
     expect(child.getLogs({ includeChildren: true })).toHaveLength(3);
     expect(grandchild.getLogs()).toHaveLength(1);
     expect(grandchild.getLogs({ includeChildren: true })).toHaveLength(1);
+
+    const ids = logger
+      .getLogs({ includeChildren: true })
+      .map((entry) => entry.id);
+    expect(ids).toStrictEqual([1, 2, 3, 4]);
   });
 
   it('clear', () => {

@@ -44,7 +44,7 @@ export type FifoLoggerOptions = {
  * A FIFO logger that stores the last events in an array.
  */
 export class FifoLogger {
-  private lastID: number;
+  private lastID: { id: number };
   private initialOptions: FifoLoggerOptions;
   private events: LogEntry[];
   private uuids: string[];
@@ -59,7 +59,7 @@ export class FifoLogger {
   level: LevelWithSilent;
 
   constructor(options: FifoLoggerOptions = {}) {
-    this.lastID = 0;
+    this.lastID = { id: 0 };
     this.initialOptions = options;
     this.uuids = [v4()];
     this.events = [];
@@ -142,6 +142,7 @@ export class FifoLogger {
     const newFifoLogger = new FifoLogger(this.initialOptions);
     newFifoLogger.events = this.events;
     newFifoLogger.uuids = [v4(), ...this.uuids];
+    newFifoLogger.lastID = this.lastID;
     newFifoLogger.bindings = { ...this.bindings, ...bindings };
     return newFifoLogger;
   }
@@ -198,7 +199,7 @@ function addEvent(
   if (level < logger.levelAsNumber) return;
 
   const event: Partial<LogEntry> = {
-    id: ++logger.lastID,
+    id: ++logger.lastID.id,
     level,
     levelLabel: levels.labels[level],
     time: Date.now(),

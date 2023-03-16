@@ -136,7 +136,7 @@ exports[`FifoLogger simple case, limit 2 3`] = `
   },
   {
     "error": undefined,
-    "id": 1,
+    "id": 10,
     "level": 60,
     "levelLabel": "fatal",
     "message": "a fatal error in a child",
