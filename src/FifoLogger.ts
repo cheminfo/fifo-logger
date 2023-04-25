@@ -1,5 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 
+import { Logger } from './Logger';
 import { LevelNumber, LevelWithSilent, levels } from './levels';
 
 export type LogEntry = {
@@ -43,7 +44,7 @@ export type FifoLoggerOptions = {
 /**
  * A FIFO logger that stores the last events in an array.
  */
-export class FifoLogger {
+export class FifoLogger implements Logger {
   private lastID: { id: number };
   private initialOptions: FifoLoggerOptions;
   private events: LogEntry[];
