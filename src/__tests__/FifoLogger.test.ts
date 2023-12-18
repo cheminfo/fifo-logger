@@ -158,7 +158,7 @@ describe('FifoLogger', () => {
   });
 
   it('clear', () => {
-    const messages: (string | undefined)[] = [];
+    const messages: Array<string | undefined> = [];
     const depths: number[] = [];
     const logger = new FifoLogger({
       onChange: (log, logs, info) => {
@@ -281,7 +281,7 @@ describe('FifoLogger', () => {
   });
 
   it('onchange', () => {
-    const results: (string | number | undefined)[] = [];
+    const results: Array<string | number | undefined> = [];
     const logger = new FifoLogger({
       onChange: (log, logs) => {
         results.push(log?.message);
@@ -304,11 +304,11 @@ describe('FifoLogger', () => {
   });
 
   it('onchange takes only depth 1', () => {
-    const results: any = [];
+    const results: Array<string | number> = [];
     const logger = new FifoLogger({
       onChange: (log, logs, info) => {
-        if (info.depth === 1) {
-          results.push(log?.message);
+        if (log && info.depth === 1) {
+          results.push(log.message);
           results.push(logs.length);
         }
       },
@@ -322,8 +322,8 @@ describe('FifoLogger', () => {
   });
 
   it('onchange with throttle', () => {
-    let results: any = [];
-    let throttleFunc = throttle(100, (log, logs) => {
+    const results: Array<number | string> = [];
+    const throttleFunc = throttle(100, (log, logs) => {
       results.push(log.message);
       results.push(logs.length);
     });

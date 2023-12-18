@@ -2,7 +2,7 @@ import { v4 } from '@lukeed/uuid';
 
 import { LevelNumber, LevelWithSilent, levels } from './levels';
 
-export type LogEntry = {
+export interface LogEntry {
   id: number;
   time: number;
   level: LevelNumber;
@@ -11,9 +11,9 @@ export type LogEntry = {
   message: string;
   meta?: Record<string, any>;
   error?: Error;
-};
+}
 
-export type FifoLoggerOptions = {
+export interface FifoLoggerOptions {
   /**
    * The maximum number of events to store.
    * @default 1000
@@ -38,7 +38,7 @@ export type FifoLoggerOptions = {
    * An object of key-value pairs to include in log lines as properties.
    */
   bindings?: Record<string, any>;
-};
+}
 
 /**
  * A FIFO logger that stores the last events in an array.
@@ -151,77 +151,73 @@ export class FifoLogger {
   trace(message: string): void;
   trace(error: Error): void;
   trace(value: unknown, message?: string) {
-    addEvent(this, levels.values.trace, value, message);
+    this.#addEvent(levels.values.trace, value, message);
   }
 
   debug(obj: Record<string, unknown>, message: string): void;
   debug(message: string): void;
   debug(error: Error): void;
   debug(value: unknown, message?: string): void {
-    addEvent(this, levels.values.debug, value, message);
+    this.#addEvent(levels.values.debug, value, message);
   }
 
   info(obj: Record<string, unknown>, message: string): void;
   info(message: string): void;
   info(error: Error): void;
   info(value: unknown, message?: string): void {
-    addEvent(this, levels.values.info, value, message);
+    this.#addEvent(levels.values.info, value, message);
   }
 
   warn(obj: Record<string, unknown>, message: string): void;
   warn(message: string): void;
   warn(error: Error): void;
   warn(value: unknown, message?: string): void {
-    addEvent(this, levels.values.warn, value, message);
+    this.#addEvent(levels.values.warn, value, message);
   }
 
   error(obj: Record<string, unknown>, message: string): void;
   error(message: string): void;
   error(error: Error): void;
   error(value: unknown, message?: string): void {
-    addEvent(this, levels.values.error, value, message);
+    this.#addEvent(levels.values.error, value, message);
   }
 
   fatal(obj: Record<string, unknown>, message: string): void;
   fatal(message: string): void;
   fatal(error: Error): void;
   fatal(value: unknown, message?: string): void {
-    addEvent(this, levels.values.fatal, value, message);
-  }
-}
-
-function addEvent(
-  logger: any,
-  level: LevelNumber,
-  value: unknown,
-  message?: string,
-) {
-  if (level < logger.levelAsNumber) return;
-
-  const event: Partial<LogEntry> = {
-    id: ++logger.lastID.id,
-    level,
-    levelLabel: levels.labels[level],
-    time: Date.now(),
-    uuids: logger.uuids,
-  };
-  if (value instanceof Error) {
-    event.message = value.toString();
-    event.error = value;
-    event.meta = { ...logger.bindings };
-  } else if (message !== undefined && typeof value === 'object') {
-    event.message = message;
-    event.meta = { ...logger.bindings, ...value };
-  } else if (message === undefined && typeof value === 'string') {
-    event.message = value;
-    event.meta = { ...logger.bindings };
-  } else {
-    throw new Error('Invalid arguments');
+    this.#addEvent(levels.values.fatal, value, message);
   }
 
-  logger.events.push(event);
-  logger.checkSize();
-  if (logger.onChange) {
-    logger.onChange(event, logger.events, { depth: logger.uuids.length });
+  #addEvent(level: LevelNumber, value: unknown, message?: string) {
+    if (level < this.levelAsNumber) return;
+
+    const event: LogEntry = {
+      id: ++this.lastID.id,
+      level,
+      levelLabel: levels.labels[level],
+      time: Date.now(),
+      uuids: this.uuids,
+      message: '',
+    };
+    if (value instanceof Error) {
+      event.message = value.toString();
+      event.error = value;
+      event.meta = { ...this.bindings };
+    } else if (message !== undefined && typeof value === 'object') {
+      event.message = message;
+      event.meta = { ...this.bindings, ...value };
+    } else if (message === undefined && typeof value === 'string') {
+      event.message = value;
+      event.meta = { ...this.bindings };
+    } else {
+      throw new Error('Invalid arguments');
+    }
+
+    this.events.push(event);
+    this.checkSize();
+    if (this.onChange) {
+      this.onChange(event, this.events, { depth: this.uuids.length });
+    }
   }
 }
