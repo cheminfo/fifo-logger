@@ -1,5 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 
+import { CustomEvent } from './CustomEvent';
 import { LevelNumber, LevelWithSilent, levels } from './levels';
 
 export interface LogEntry {
@@ -43,7 +44,7 @@ export interface FifoLoggerOptions {
 /**
  * A FIFO logger that stores the last events in an array.
  */
-export class FifoLogger {
+export class FifoLogger extends EventTarget {
   private lastID: { id: number };
   private initialOptions: FifoLoggerOptions;
   private events: LogEntry[];
@@ -59,6 +60,7 @@ export class FifoLogger {
   level: LevelWithSilent;
 
   constructor(options: FifoLoggerOptions = {}) {
+    super();
     this.lastID = { id: 0 };
     this.initialOptions = options;
     this.uuids = [v4()];
@@ -216,6 +218,16 @@ export class FifoLogger {
 
     this.events.push(event);
     this.checkSize();
+
+    const customEvent = new CustomEvent('log', {
+      detail: {
+        log: event,
+        logs: this.events,
+        info: { depth: this.uuids.length },
+      },
+    });
+    this.dispatchEvent(customEvent);
+
     if (this.onChange) {
       this.onChange(event, this.events, { depth: this.uuids.length });
     }

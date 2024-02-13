@@ -102,6 +102,35 @@ describe('FifoLogger', () => {
     expect(logger.getLogs({ includeChildren: true })).toHaveLength(3);
   });
 
+  it('addEventListener', () => {
+    const logger = new FifoLogger();
+    const firstListener: any[] = [];
+    const secondListener: any[] = [];
+    logger.addEventListener('log', (event) => {
+      firstListener.push(event.detail);
+    });
+    logger.addEventListener('log', (event) => {
+      secondListener.push(event.detail.log.message);
+    });
+    logger.info('an info');
+    logger.warn('a warning');
+    logger.error('an error');
+    logger.fatal('a fatal error');
+
+    expect(firstListener.map((detail) => detail.log.message)).toStrictEqual([
+      'an info',
+      'a warning',
+      'an error',
+      'a fatal error',
+    ]);
+    expect(secondListener).toStrictEqual([
+      'an info',
+      'a warning',
+      'an error',
+      'a fatal error',
+    ]);
+  });
+
   it('test types', () => {
     const logger = new FifoLogger();
     expect(() => {
