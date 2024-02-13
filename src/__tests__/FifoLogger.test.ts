@@ -1,7 +1,9 @@
 import { BaseLogger } from 'pino';
 import { throttle } from 'throttle-debounce';
 
-import { FifoLogger, LogEntry } from '../FifoLogger';
+import { FifoLogger } from '../FifoLogger';
+import { LogEntry } from '../LogEntry';
+import { LogEventData } from '../LogEvent';
 
 describe('FifoLogger', () => {
   it('test pino compatibility', () => {
@@ -100,6 +102,44 @@ describe('FifoLogger', () => {
     expect(childLogger.getLogs()).toHaveLength(1);
 
     expect(logger.getLogs({ includeChildren: true })).toHaveLength(3);
+  });
+
+  it('addEventListener', () => {
+    const logger = new FifoLogger();
+    const firstListener: LogEventData[] = [];
+    const secondListener: string[] = [];
+    const onceListener: string[] = [];
+    logger.addEventListener('log', (event) => {
+      firstListener.push(event.detail);
+    });
+    logger.addEventListener('log', (event) => {
+      secondListener.push(event.detail.log.message);
+    });
+    logger.addEventListener(
+      'log',
+      (event) => {
+        onceListener.push(event.detail.log.message);
+      },
+      { once: true },
+    );
+    logger.info('an info');
+    logger.warn('a warning');
+    logger.error('an error');
+    logger.fatal('a fatal error');
+
+    expect(firstListener.map((detail) => detail.log.message)).toStrictEqual([
+      'an info',
+      'a warning',
+      'an error',
+      'a fatal error',
+    ]);
+    expect(secondListener).toStrictEqual([
+      'an info',
+      'a warning',
+      'an error',
+      'a fatal error',
+    ]);
+    expect(onceListener).toStrictEqual(['an info']);
   });
 
   it('test types', () => {
