@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/cheminfo/fifo-logger/compare/v0.6.1...v0.7.0) (2024-04-04)
+
+
+### Features
+
+* add Event Listener ([#21](https://github.com/cheminfo/fifo-logger/issues/21)) ([7f366a8](https://github.com/cheminfo/fifo-logger/commit/7f366a8c1fa36d669a31de7d090fb4c1afb9c9f3))
+
 ## [0.6.1](https://github.com/cheminfo/fifo-logger/compare/v0.6.0...v0.6.1) (2023-03-16)
 
 
