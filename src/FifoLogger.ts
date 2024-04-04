@@ -1,17 +1,9 @@
 import { v4 } from '@lukeed/uuid';
+import { TypedEventTarget } from 'typescript-event-target';
 
+import { LogEntry } from './LogEntry';
+import { LogEvent } from './LogEvent';
 import { LevelNumber, LevelWithSilent, levels } from './levels';
-
-export interface LogEntry {
-  id: number;
-  time: number;
-  level: LevelNumber;
-  levelLabel: LevelWithSilent;
-  uuids: string[];
-  message: string;
-  meta?: Record<string, any>;
-  error?: Error;
-}
 
 export interface FifoLoggerOptions {
   /**
@@ -40,10 +32,15 @@ export interface FifoLoggerOptions {
   bindings?: Record<string, any>;
 }
 
+interface LoggerEventMap {
+  log: LogEvent;
+}
+
 /**
  * A FIFO logger that stores the last events in an array.
  */
-export class FifoLogger {
+
+export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
   private lastID: { id: number };
   private initialOptions: FifoLoggerOptions;
   private events: LogEntry[];
@@ -59,6 +56,7 @@ export class FifoLogger {
   level: LevelWithSilent;
 
   constructor(options: FifoLoggerOptions = {}) {
+    super();
     this.lastID = { id: 0 };
     this.initialOptions = options;
     this.uuids = [v4()];
@@ -216,6 +214,16 @@ export class FifoLogger {
 
     this.events.push(event);
     this.checkSize();
+
+    this.dispatchTypedEvent(
+      'log',
+      new LogEvent({
+        log: event,
+        logs: this.events,
+        info: { depth: this.uuids.length },
+      }),
+    );
+
     if (this.onChange) {
       this.onChange(event, this.events, { depth: this.uuids.length });
     }
