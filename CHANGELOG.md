@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/cheminfo/fifo-logger/compare/v0.7.0...v1.0.0) (2024-04-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* replace onChange callback option with "change" event
+
+### Features
+
+* add change event ([89d87cb](https://github.com/cheminfo/fifo-logger/commit/89d87cb06b2ea5d388b024416ed5dd08cd173519))
+
 ## [0.7.0](https://github.com/cheminfo/fifo-logger/compare/v0.6.1...v0.7.0) (2024-04-04)
 
 
