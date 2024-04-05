@@ -2,8 +2,8 @@ import { v4 } from '@lukeed/uuid';
 import { TypedEventTarget } from 'typescript-event-target';
 
 import { LogEntry } from './LogEntry';
-import { LogEvent } from './LogEvent';
-import { LevelNumber, LevelWithSilent, levels } from './levels';
+import { ChangeEvent, LogEvent } from './events';
+import { LevelNumber, levels, LevelWithSilent } from './levels';
 
 export interface FifoLoggerOptions {
   /**
@@ -19,21 +19,20 @@ export interface FifoLoggerOptions {
    */
   level?: LevelWithSilent;
   /**
-   * Called when a new log is added.
-   */
-  onChange?: (
-    log: LogEntry | undefined,
-    logs: LogEntry[],
-    info: { depth: number },
-  ) => void;
-  /**
    * An object of key-value pairs to include in log lines as properties.
    */
-  bindings?: Record<string, any>;
+  bindings?: Record<string, unknown>;
 }
 
 interface LoggerEventMap {
   log: LogEvent;
+  change: ChangeEvent;
+}
+
+export interface GetLogsOptions {
+  minLevel?: LevelWithSilent;
+  level?: LevelWithSilent;
+  includeChildren?: boolean;
 }
 
 /**
@@ -47,12 +46,7 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
   private uuids: string[];
   private levelAsNumber: number;
   private limit: number;
-  private bindings: Record<string, any>;
-  private onChange?: (
-    log: LogEntry | undefined,
-    logs: LogEntry[],
-    info: { depth: number },
-  ) => void;
+  private bindings: Record<string, unknown>;
   level: LevelWithSilent;
 
   constructor(options: FifoLoggerOptions = {}) {
@@ -65,7 +59,6 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
     this.levelAsNumber = levels.values[this.level];
     this.limit = options.limit ?? 1000;
     this.bindings = options.bindings ?? {};
-    this.onChange = options.onChange;
   }
 
   setLevel(level: LevelWithSilent) {
@@ -86,7 +79,6 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
 
   /**
    * Remove events from the current logger and its children.
-   * @param options
    */
   clear() {
     for (let i = this.events.length - 1; i >= 0; i--) {
@@ -94,16 +86,20 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
         this.events.splice(i, 1);
       }
     }
-    this.onChange?.(undefined, this.events, { depth: this.uuids.length });
+    this.dispatchTypedEvent(
+      'change',
+      new ChangeEvent({
+        logs: this.events,
+        info: { depth: this.uuids.length },
+      }),
+    );
   }
 
-  getLogs(
-    options: {
-      minLevel?: LevelWithSilent;
-      level?: LevelWithSilent;
-      includeChildren?: boolean;
-    } = {},
-  ): LogEntry[] {
+  /**
+   * Get a filtered list of all log events.
+   * @param options
+   */
+  getLogs(options: GetLogsOptions = {}): LogEntry[] {
     const { level, minLevel, includeChildren } = options;
     let logs = this.events.slice();
 
@@ -132,16 +128,18 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
   }
 
   /**
-   * @param bindings: an object of key-value pairs to include in log lines as properties.
-   * @param options: an options object that will override child logger inherited options.
+   * @param bindings an object of key-value pairs to include in log lines as properties.
    */
 
-  child(bindings?: Record<string, any>) {
+  child(bindings?: Record<string, unknown>) {
     const newFifoLogger = new FifoLogger(this.initialOptions);
     newFifoLogger.events = this.events;
     newFifoLogger.uuids = [v4(), ...this.uuids];
     newFifoLogger.lastID = this.lastID;
     newFifoLogger.bindings = { ...this.bindings, ...bindings };
+    newFifoLogger.addEventListener('change', (event) => {
+      this.dispatchTypedEvent('change', new ChangeEvent(event.detail));
+    });
     return newFifoLogger;
   }
 
@@ -224,8 +222,12 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
       }),
     );
 
-    if (this.onChange) {
-      this.onChange(event, this.events, { depth: this.uuids.length });
-    }
+    this.dispatchTypedEvent(
+      'change',
+      new ChangeEvent({
+        logs: this.events,
+        info: { depth: this.uuids.length },
+      }),
+    );
   }
 }

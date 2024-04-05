@@ -7,6 +7,6 @@ export interface LogEntry {
   levelLabel: LevelWithSilent;
   uuids: string[];
   message: string;
-  meta?: Record<string, any>;
+  meta?: Record<string, unknown>;
   error?: Error;
 }

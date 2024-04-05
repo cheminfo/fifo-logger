@@ -3,7 +3,7 @@ import { throttle } from 'throttle-debounce';
 
 import { FifoLogger } from '../FifoLogger';
 import { LogEntry } from '../LogEntry';
-import { LogEventData } from '../LogEvent';
+import { LogEventData } from '../events';
 
 describe('FifoLogger', () => {
   it('test pino compatibility', () => {
@@ -200,11 +200,10 @@ describe('FifoLogger', () => {
   it('clear', () => {
     const messages: Array<string | undefined> = [];
     const depths: number[] = [];
-    const logger = new FifoLogger({
-      onChange: (log, logs, info) => {
-        messages.push(log?.message);
-        depths.push(info.depth);
-      },
+    const logger = new FifoLogger();
+    logger.addEventListener('change', (event) => {
+      messages.push(event.detail.logs.at(-1)?.message);
+      depths.push(event.detail.info.depth);
     });
     logger.info('an info');
 
@@ -224,14 +223,15 @@ describe('FifoLogger', () => {
     expect(child.getLogs({ includeChildren: true })).toHaveLength(0);
     expect(grandchild.getLogs({ includeChildren: true })).toHaveLength(0);
 
+    expect(depths).toStrictEqual([1, 2, 3, 2, 2]);
     expect(messages).toStrictEqual([
       'an info',
       'a warn in a child',
       'an error in a grandchild',
       'another warn in a child',
-      undefined,
+      // After child.clear(), we are left with the first log on the root logger
+      'an info',
     ]);
-    expect(depths).toStrictEqual([1, 2, 3, 2, 2]);
   });
 
   it('error', () => {
@@ -322,11 +322,10 @@ describe('FifoLogger', () => {
 
   it('onchange', () => {
     const results: Array<string | number | undefined> = [];
-    const logger = new FifoLogger({
-      onChange: (log, logs) => {
-        results.push(log?.message);
-        results.push(logs.length);
-      },
+    const logger = new FifoLogger();
+    logger.addEventListener('change', (event) => {
+      results.push(event.detail.logs.at(-1)?.message);
+      results.push(event.detail.logs.length);
     });
     logger.info('first info');
     logger.info('second info');
@@ -345,13 +344,14 @@ describe('FifoLogger', () => {
 
   it('onchange takes only depth 1', () => {
     const results: Array<string | number> = [];
-    const logger = new FifoLogger({
-      onChange: (log, logs, info) => {
-        if (log && info.depth === 1) {
-          results.push(log.message);
-          results.push(logs.length);
-        }
-      },
+    const logger = new FifoLogger();
+    logger.addEventListener('change', (event) => {
+      const log = event.detail.logs.at(-1);
+      const info = event.detail.info;
+      if (log && info.depth === 1) {
+        results.push(log.message);
+        results.push(event.detail.logs.length);
+      }
     });
     logger.info('first info');
     logger.info('second info');
@@ -367,8 +367,10 @@ describe('FifoLogger', () => {
       results.push(log.message);
       results.push(logs.length);
     });
-    const logger = new FifoLogger({
-      onChange: throttleFunc,
+    const logger = new FifoLogger();
+    logger.addEventListener('change', (event) => {
+      const log = event.detail.logs.at(-1);
+      throttleFunc(log, event.detail.logs);
     });
     logger.info('first info');
     logger.info('second info');
