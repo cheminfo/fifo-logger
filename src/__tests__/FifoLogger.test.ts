@@ -1,5 +1,6 @@
 import { BaseLogger } from 'pino';
 import { throttle } from 'throttle-debounce';
+import { describe, it, expect } from 'vitest';
 
 import { FifoLogger } from '../FifoLogger';
 import { LogEntry } from '../LogEntry';
@@ -324,8 +325,7 @@ describe('FifoLogger', () => {
     const results: Array<string | number | undefined> = [];
     const logger = new FifoLogger();
     logger.addEventListener('change', (event) => {
-      results.push(event.detail.logs.at(-1)?.message);
-      results.push(event.detail.logs.length);
+      results.push(event.detail.logs.at(-1)?.message, event.detail.logs.length);
     });
     logger.info('first info');
     logger.info('second info');
@@ -349,8 +349,7 @@ describe('FifoLogger', () => {
       const log = event.detail.logs.at(-1);
       const info = event.detail.info;
       if (log && info.depth === 1) {
-        results.push(log.message);
-        results.push(event.detail.logs.length);
+        results.push(log.message, event.detail.logs.length);
       }
     });
     logger.info('first info');
@@ -364,8 +363,7 @@ describe('FifoLogger', () => {
   it('onchange with throttle', () => {
     const results: Array<number | string> = [];
     const throttleFunc = throttle(100, (log, logs) => {
-      results.push(log.message);
-      results.push(logs.length);
+      results.push(log.message, logs.length);
     });
     const logger = new FifoLogger();
     logger.addEventListener('change', (event) => {
