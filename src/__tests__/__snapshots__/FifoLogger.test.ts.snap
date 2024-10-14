@@ -1,4 +1,151 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FifoLogger > logging message, object, error 1`] = `
+[
+  {
+    "error": undefined,
+    "id": 1,
+    "level": 30,
+    "levelLabel": "info",
+    "message": "an info",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+  {
+    "error": undefined,
+    "id": 2,
+    "level": 30,
+    "levelLabel": "info",
+    "message": "an info with an object ",
+    "meta": {
+      "object": "ab",
+    },
+    "time": 42,
+    "uuids": 1,
+  },
+]
+`;
+
+exports[`FifoLogger > simple case, default level and limit 1`] = `
+[
+  {
+    "error": undefined,
+    "id": 1,
+    "level": 30,
+    "levelLabel": "info",
+    "message": "an info",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+  {
+    "error": undefined,
+    "id": 2,
+    "level": 40,
+    "levelLabel": "warn",
+    "message": "a warning",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+  {
+    "error": undefined,
+    "id": 3,
+    "level": 50,
+    "levelLabel": "error",
+    "message": "an error",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+  {
+    "error": undefined,
+    "id": 4,
+    "level": 60,
+    "levelLabel": "fatal",
+    "message": "a fatal error",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+]
+`;
+
+exports[`FifoLogger > simple case, limit 2 1`] = `
+[
+  {
+    "error": undefined,
+    "id": 3,
+    "level": 50,
+    "levelLabel": "error",
+    "message": "an error",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+  {
+    "error": undefined,
+    "id": 4,
+    "level": 60,
+    "levelLabel": "fatal",
+    "message": "a fatal error",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+]
+`;
+
+exports[`FifoLogger > simple case, limit 2 2`] = `
+[
+  {
+    "error": undefined,
+    "id": 8,
+    "level": 60,
+    "levelLabel": "fatal",
+    "message": "a fatal error",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+  {
+    "error": undefined,
+    "id": 9,
+    "level": 60,
+    "levelLabel": "fatal",
+    "message": "a fatal error",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+]
+`;
+
+exports[`FifoLogger > simple case, limit 2 3`] = `
+[
+  {
+    "error": undefined,
+    "id": 9,
+    "level": 60,
+    "levelLabel": "fatal",
+    "message": "a fatal error",
+    "meta": {},
+    "time": 42,
+    "uuids": 1,
+  },
+  {
+    "error": undefined,
+    "id": 10,
+    "level": 60,
+    "levelLabel": "fatal",
+    "message": "a fatal error in a child",
+    "meta": {},
+    "time": 42,
+    "uuids": 2,
+  },
+]
+`;
 
 exports[`FifoLogger logging message, object, error 1`] = `
 [

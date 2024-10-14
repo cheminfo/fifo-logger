@@ -15,7 +15,6 @@ export interface FifoLoggerOptions {
    * The minimum level of events to store.
    * Allowed values: 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'
    * @default 'info'
-   *
    */
   level?: LevelWithSilent;
   /**
@@ -128,7 +127,7 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
   }
 
   /**
-   * @param bindings an object of key-value pairs to include in log lines as properties.
+   * @param bindings - an object of key-value pairs to include in log lines as properties.
    */
 
   child(bindings?: Record<string, unknown>) {
