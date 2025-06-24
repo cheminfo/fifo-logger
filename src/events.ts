@@ -1,5 +1,4 @@
-import { CustomEvent } from './CustomEvent';
-import type { LogEntry } from './LogEntry';
+import type { LogEntry } from './LogEntry.ts';
 
 export interface LogEventData {
   log: LogEntry;

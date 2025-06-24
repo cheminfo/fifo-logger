@@ -1,10 +1,10 @@
-import { BaseLogger } from 'pino';
+import type { BaseLogger } from 'pino';
 import { throttle } from 'throttle-debounce';
 import { describe, it, expect } from 'vitest';
 
-import { FifoLogger } from '../FifoLogger';
-import { LogEntry } from '../LogEntry';
-import { LogEventData } from '../events';
+import { FifoLogger } from '../FifoLogger.ts';
+import type { LogEntry } from '../LogEntry.ts';
+import type { LogEventData } from '../events.ts';
 
 describe('FifoLogger', () => {
   it('test pino compatibility', () => {

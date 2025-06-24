@@ -1,17 +1,19 @@
 # fifo-logger
 
-[![NPM version][npm-image]][npm-url]
-[![build status][ci-image]][ci-url]
-[![Test coverage][codecov-image]][codecov-url]
-[![npm download][download-image]][download-url]
+[![NPM version](https://img.shields.io/npm/v/fifo-logger.svg)](https://www.npmjs.com/package/fifo-logger)
+[![npm download](https://img.shields.io/npm/dm/fifo-logger.svg)](https://www.npmjs.com/package/fifo-logger)
+[![test coverage](https://img.shields.io/codecov/c/github/cheminfo/fifo-logger.svg)](https://codecov.io/gh/cheminfo/fifo-logger)
+[![license](https://img.shields.io/npm/l/fifo-logger.svg)](https://github.com/cheminfo/fifo-logger/blob/main/LICENSE)
 
-Simple event logger for the browser and node.js inspired by `pino`.
+Simple event logger for the browser and Node.js inspired by `pino`.
 
-By default it will keep the 10'000 last events that can easily be retrieved and filtered.
+By default, it will keep the 10'000 last events that can easily be retrieved and filtered.
 
 ## Installation
 
-`$ npm i fifo-logger`
+```console
+npm install fifo-logger
+```
 
 ## Simple usage
 
@@ -155,12 +157,3 @@ console.log(results);
 ## License
 
 [MIT](./LICENSE)
-
-[npm-image]: https://img.shields.io/npm/v/fifo-logger.svg
-[npm-url]: https://www.npmjs.com/package/fifo-logger
-[ci-image]: https://github.com/cheminfo/fifo-logger/workflows/Node.js%20CI/badge.svg?branch=main
-[ci-url]: https://github.com/cheminfo/fifo-logger/actions?query=workflow%3A%22Node.js+CI%22
-[codecov-image]: https://img.shields.io/codecov/c/github/cheminfo/fifo-logger.svg
-[codecov-url]: https://codecov.io/gh/cheminfo/fifo-logger
-[download-image]: https://img.shields.io/npm/dm/fifo-logger.svg
-[download-url]: https://www.npmjs.com/package/fifo-logger
