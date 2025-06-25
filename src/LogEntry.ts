@@ -1,4 +1,4 @@
-import { LevelNumber, LevelWithSilent } from './levels';
+import type { LevelNumber, LevelWithSilent } from './levels.ts';
 
 export interface LogEntry {
   id: number;

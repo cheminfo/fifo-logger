@@ -1,4 +1,4 @@
-export * from './events';
-export * from './FifoLogger';
-export { Level, LevelWithSilent } from './levels';
-export * from './LogEntry';
+export * from './events.ts';
+export * from './FifoLogger.ts';
+export type { Level, LevelWithSilent } from './levels.ts';
+export * from './LogEntry.ts';

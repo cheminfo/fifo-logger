@@ -1,9 +1,9 @@
-import { v4 } from '@lukeed/uuid';
 import { TypedEventTarget } from 'typescript-event-target';
 
-import { LogEntry } from './LogEntry';
-import { ChangeEvent, LogEvent } from './events';
-import { LevelNumber, levels, LevelWithSilent } from './levels';
+import type { LogEntry } from './LogEntry.ts';
+import { ChangeEvent, LogEvent } from './events.ts';
+import type { LevelNumber, LevelWithSilent } from './levels.ts';
+import { levels } from './levels.ts';
 
 export interface FifoLoggerOptions {
   /**
@@ -35,9 +35,8 @@ export interface GetLogsOptions {
 }
 
 /**
- * A FIFO logger that stores the last events in an array.
+ * A FIFO logger that stores the most recent events in an array.
  */
-
 export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
   private lastID: { id: number };
   private initialOptions: FifoLoggerOptions;
@@ -52,7 +51,7 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
     super();
     this.lastID = { id: 0 };
     this.initialOptions = options;
-    this.uuids = [v4()];
+    this.uuids = [crypto.randomUUID()];
     this.events = [];
     this.level = options.level || 'info';
     this.levelAsNumber = levels.values[this.level];
@@ -81,7 +80,9 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
    */
   clear() {
     for (let i = this.events.length - 1; i >= 0; i--) {
-      if (this.events[i].uuids.includes(this.uuids[0])) {
+      if (
+        (this.events[i] as LogEntry).uuids.includes(this.uuids[0] as string)
+      ) {
         this.events.splice(i, 1);
       }
     }
@@ -96,14 +97,15 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
 
   /**
    * Get a filtered list of all log events.
-   * @param options
+   * @param options - Options.
+   * @returns Array of filtered logs.
    */
   getLogs(options: GetLogsOptions = {}): LogEntry[] {
     const { level, minLevel, includeChildren } = options;
     let logs = this.events.slice();
 
     if (includeChildren) {
-      logs = logs.filter((log) => log.uuids.includes(this.uuids[0]));
+      logs = logs.filter((log) => log.uuids.includes(this.uuids[0] as string));
     } else {
       logs = logs.filter((log) => log.uuids[0] === this.uuids[0]);
     }
@@ -127,13 +129,15 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
   }
 
   /**
+   * Create a child logger with additional bindings.
    * @param bindings - an object of key-value pairs to include in log lines as properties.
+   * @returns The new child logger.
    */
 
   child(bindings?: Record<string, unknown>) {
     const newFifoLogger = new FifoLogger(this.initialOptions);
     newFifoLogger.events = this.events;
-    newFifoLogger.uuids = [v4(), ...this.uuids];
+    newFifoLogger.uuids = [crypto.randomUUID(), ...this.uuids];
     newFifoLogger.lastID = this.lastID;
     newFifoLogger.bindings = { ...this.bindings, ...bindings };
     newFifoLogger.addEventListener('change', (event) => {
