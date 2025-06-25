@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/cheminfo/fifo-logger/compare/v1.0.0...v2.0.0) (2025-06-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* make project ESM-only and modernize structure ([#28](https://github.com/cheminfo/fifo-logger/issues/28))
+
+### Code Refactoring
+
+* make project ESM-only and modernize structure ([#28](https://github.com/cheminfo/fifo-logger/issues/28)) ([dabbfac](https://github.com/cheminfo/fifo-logger/commit/dabbface30c101fe0c9d3a92be5408ce6636eb15))
+
 ## [1.0.0](https://github.com/cheminfo/fifo-logger/compare/v0.7.0...v1.0.0) (2024-04-05)
 
 
