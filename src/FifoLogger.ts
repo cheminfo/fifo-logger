@@ -111,14 +111,14 @@ export class FifoLogger extends TypedEventTarget<LoggerEventMap> {
     }
 
     if (level) {
-      const levelNumber = Number(levels.values[level]);
+      const levelNumber = levels.values[level];
       if (Number.isNaN(levelNumber)) {
         throw new Error('Invalid level');
       }
       logs = logs.filter((log) => log.level === levelNumber);
     }
     if (minLevel) {
-      const levelNumber = Number(levels.values[minLevel]);
+      const levelNumber = levels.values[minLevel];
       if (Number.isNaN(levelNumber)) {
         throw new Error('Invalid level');
       }

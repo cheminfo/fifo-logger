@@ -1,12 +1,14 @@
 {
   "name": "fifo-logger",
   "version": "2.0.0",
-  "description": "Simple event logger for the browser and node.js",
-  "author": "Luc Patiny",
-  "keywords": [],
-  "type": "module",
-  "exports": "./lib/index.js",
   "license": "MIT",
+  "description": "Simple event logger for the browser and node.js",
+  "keywords": [],
+  "author": "Luc Patiny",
+  "type": "module",
+  "exports": {
+    ".": "./lib/index.js"
+  },
   "files": [
     "lib",
     "src"
@@ -14,7 +16,7 @@
   "scripts": {
     "build": "npm run tsc && cheminfo-build --entry lib/index.js --root FifoLogger",
     "check-types": "tsc --noEmit",
-    "clean": "rimraf lib",
+    "clean": "rimraf coverage dist lib",
     "eslint": "eslint .",
     "eslint-fix": "eslint . --fix",
     "prepack": "npm run tsc",
@@ -29,18 +31,18 @@
     "typescript-event-target": "^1.1.1"
   },
   "devDependencies": {
-    "@types/node": "^24.0.3",
+    "@types/node": "^24.2.1",
     "@types/throttle-debounce": "^5.0.2",
     "@vitest/coverage-v8": "^3.2.4",
     "@zakodium/tsconfig": "^1.0.2",
     "cheminfo-build": "^1.2.1",
-    "eslint": "^9.29.0",
-    "eslint-config-cheminfo-typescript": "^18.0.1",
-    "pino": "^9.7.0",
-    "prettier": "^3.6.0",
+    "eslint": "^9.33.0",
+    "eslint-config-cheminfo-typescript": "^19.0.0",
+    "pino": "^9.9.0",
+    "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
     "throttle-debounce": "^5.0.2",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },
   "repository": {
