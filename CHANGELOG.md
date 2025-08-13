@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/cheminfo/fifo-logger/compare/v2.0.0...v2.0.1) (2025-08-13)
+
+
+### Bug Fixes
+
+* exports ([#30](https://github.com/cheminfo/fifo-logger/issues/30)) ([28e257d](https://github.com/cheminfo/fifo-logger/commit/28e257d6695d6b87a7b63212d084e7fad2260afb))
+
 ## [2.0.0](https://github.com/cheminfo/fifo-logger/compare/v1.0.0...v2.0.0) (2025-06-25)
 
 
