@@ -1,6 +1,6 @@
 import type { BaseLogger } from 'pino';
 import { throttle } from 'throttle-debounce';
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { FifoLogger } from '../FifoLogger.ts';
 import type { LogEntry } from '../LogEntry.ts';
@@ -19,6 +19,7 @@ describe('FifoLogger', () => {
 
     //@ts-expect-error should be ok
     const logger: Omit<BaseLogger, 'silent'> = new FifoLogger();
+
     expect(logger.info).toBeDefined();
   });
 
@@ -32,6 +33,7 @@ describe('FifoLogger', () => {
     logger.fatal('a fatal error');
 
     const logs = logger.getLogs();
+
     expect(logs.map((log) => log.message)).toStrictEqual([
       'an info',
       'a warning',
@@ -41,9 +43,11 @@ describe('FifoLogger', () => {
     expect(removeVariableValues(logs)).toMatchSnapshot();
 
     const errors = logger.getLogs({ minLevel: 'error' });
+
     expect(errors).toHaveLength(2);
 
     const oneError = logger.getLogs({ level: 'error' });
+
     expect(oneError).toHaveLength(1);
   });
 
@@ -55,6 +59,7 @@ describe('FifoLogger', () => {
     logger.fatal('a fatal error');
 
     const logs = logger.getLogs();
+
     expect(logs.map((log) => log.message)).toStrictEqual([
       'an error',
       'a fatal error',
@@ -69,7 +74,9 @@ describe('FifoLogger', () => {
     logger.fatal('a fatal error');
 
     expect(logger.getLogs()).toHaveLength(4);
+
     logger.setLimit(2);
+
     expect(logger.getLogs()).toHaveLength(2);
 
     logger.setLevel('fatal');
@@ -82,6 +89,7 @@ describe('FifoLogger', () => {
 
     const childLogger = logger.child();
     childLogger.fatal('a fatal error in a child');
+
     expect(logger.getLogs({ includeChildren: true })).toHaveLength(2);
     expect(
       removeVariableValues(logger.getLogs({ includeChildren: true })),
@@ -100,6 +108,7 @@ describe('FifoLogger', () => {
     const childLogger = logger.child();
     childLogger.warn('a warning');
     childLogger.error('an error');
+
     expect(childLogger.getLogs()).toHaveLength(1);
 
     expect(logger.getLogs({ includeChildren: true })).toHaveLength(3);
@@ -145,6 +154,7 @@ describe('FifoLogger', () => {
 
   it('test types', () => {
     const logger = new FifoLogger();
+
     expect(() => {
       // @ts-expect-error should not be able to log without message
       logger.info();
@@ -153,7 +163,9 @@ describe('FifoLogger', () => {
       // @ts-expect-error should not be able to log with 2 strings
       logger.info('a', 'b');
     }).toThrow('Invalid arguments');
+
     logger.info({}, '');
+
     expect(logger.getLogs()).toHaveLength(1);
   });
 
@@ -162,6 +174,7 @@ describe('FifoLogger', () => {
     logger.info('an info');
     logger.info({ object: 'ab' }, 'an info with an object ');
     const logs = logger.getLogs();
+
     expect(
       logs.map((log) => ({ meta: log.meta, message: log.message })),
     ).toStrictEqual([
@@ -195,6 +208,7 @@ describe('FifoLogger', () => {
     const ids = logger
       .getLogs({ includeChildren: true })
       .map((entry) => entry.id);
+
     expect(ids).toStrictEqual([1, 2, 3, 4]);
   });
 
@@ -215,11 +229,13 @@ describe('FifoLogger', () => {
     grandchild.error('an error in a grandchild');
 
     child.warn('another warn in a child');
+
     expect(logger.getLogs({ includeChildren: true })).toHaveLength(4);
     expect(child.getLogs({ includeChildren: true })).toHaveLength(3);
     expect(grandchild.getLogs({ includeChildren: true })).toHaveLength(1);
 
     child.clear();
+
     expect(logger.getLogs({ includeChildren: true })).toHaveLength(1);
     expect(child.getLogs({ includeChildren: true })).toHaveLength(0);
     expect(grandchild.getLogs({ includeChildren: true })).toHaveLength(0);
@@ -329,10 +345,13 @@ describe('FifoLogger', () => {
     });
     logger.info('first info');
     logger.info('second info');
-    expect(results).toEqual(['first info', 1, 'second info', 2]);
+
+    expect(results).toStrictEqual(['first info', 1, 'second info', 2]);
+
     const childLogger = logger.child();
     childLogger.info('info in child');
-    expect(results).toEqual([
+
+    expect(results).toStrictEqual([
       'first info',
       1,
       'second info',
@@ -354,10 +373,13 @@ describe('FifoLogger', () => {
     });
     logger.info('first info');
     logger.info('second info');
-    expect(results).toEqual(['first info', 1, 'second info', 2]);
+
+    expect(results).toStrictEqual(['first info', 1, 'second info', 2]);
+
     const childLogger = logger.child();
     childLogger.info('info in child');
-    expect(results).toEqual(['first info', 1, 'second info', 2]);
+
+    expect(results).toStrictEqual(['first info', 1, 'second info', 2]);
   });
 
   it('onchange with throttle', () => {
@@ -375,7 +397,8 @@ describe('FifoLogger', () => {
     const start = Date.now();
     while (Date.now() - start < 120);
     logger.info('an info after 120ms');
-    expect(results).toEqual(['first info', 1, 'an info after 120ms', 3]);
+
+    expect(results).toStrictEqual(['first info', 1, 'an info after 120ms', 3]);
   });
 });
 
